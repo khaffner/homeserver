@@ -1,0 +1,110 @@
+views:
+  - panel: true
+    title: Tablet
+    path: tablet
+    icon: 'mdi:tablet-ipad'
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: picture-elements
+            elements:
+              - type: state-icon
+                entity: media_player.living_room_tv
+                style:
+                  top: 85%
+                  left: 95%
+              - type: state-icon
+                entity: media_player.cc_living_room_tv
+                style:
+                  top: 80%
+                  left: 95%
+              - type: state-icon
+                entity: media_player.g_home_living_room
+                style:
+                  top: 70%
+                  left: 43%
+              - type: state-icon
+                entity: media_player.g_home_bathroom
+                style:
+                  top: 15%
+                  left: 50%
+              - type: state-label
+                entity: sensor.electricityprice_level
+                prefix: 'Electricity Price: '
+                style:
+                  top: 10%
+                  left: 20%
+              - type: state-label
+                entity: climate.dennis_rom
+                attribute: current_temperature
+                suffix: ' °C'
+                style:
+                  top: 95%
+                  left: 13%
+              - type: state-label
+                entity: climate.kjokken
+                attribute: current_temperature
+                suffix: ' °C'
+                style:
+                  top: 95%
+                  left: 36%
+              - type: state-label
+                entity: climate.mot_kjokkenoy
+                attribute: current_temperature
+                suffix: ' °C'
+                style:
+                  top: 95%
+                  left: 60%
+              - type: state-label
+                entity: climate.ved_tv
+                attribute: current_temperature
+                suffix: ' °C'
+                style:
+                  top: 95%
+                  left: 85%
+              - type: state-label
+                entity: sensor.freezer_temperature
+                style:
+                  top: 62%
+                  left: 35%
+              - type: state-label
+                entity: sensor.bathroom_temperature
+                style:
+                  top: 17%
+                  left: 60%
+              - type: state-label
+                entity: sensor.bathroom_humidity
+                style:
+                  top: 20%
+                  left: 60%
+              - type: state-label
+                entity: sensor.insight_switch_1_w
+                tap_action:
+                  action: call-service
+                  service: switch.toggle
+                  service_data:
+                    entity_id: switch.insight_switch_1
+                style:
+                  top: 55%
+                  left: 60%
+            image: 'http://192.168.100.3:8123/local/home.png'
+          - type: horizontal-stack
+            cards:
+              - type: sensor
+                entity: sensor.electricityprice_ore_in_12_hours
+                graph: line
+                detail: 2
+                hours_to_show: 24
+                unit: Øre
+                name: In 12 hours
+          - type: horizontal-stack
+            cards:
+              - type: sensor
+                entity: sensor.insight_switch_1_w
+                graph: line
+                hours_to_show: 12
+                name: Floor heating
+              - type: weather-forecast
+                entity: weather.home
+                show_forecast: true

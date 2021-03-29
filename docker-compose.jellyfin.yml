@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  jellyfin:
+    volumes:
+      - 'jellyfin_cache:/cache'
+      - 'jellyfin_config:/config'
+      - 'server_share_data:/media:ro'
+    network_mode: host
+    restart: unless-stopped
+    image: jellyfin/jellyfin

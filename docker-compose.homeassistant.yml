@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  home-assistant:
+    container_name: home-assistant
+    volumes:
+      - '/home/kevin/Dockervolumes/home-assistant/:/config'
+      - '/etc/localtime:/etc/localtime:ro'
+    network_mode: host
+    restart: unless-stopped
+    ports:
+      - 8123:8123
+    build:
+      context: ./home-assistant

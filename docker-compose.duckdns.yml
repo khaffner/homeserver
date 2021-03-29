@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  duckdns:
+    container_name: duckdns
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+    restart: unless-stopped
+    image: ghcr.io/linuxserver/duckdns:amd64-version-3a3f0388 # latest at the moment
+    env_file: 
+      - ./duckdns/secrets.env

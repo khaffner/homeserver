@@ -1,0 +1,42 @@
+- id: '1607365453210'
+  alias: Turn off floor heating
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.electricity_price_tibber
+    attribute: price_level
+    to: VERY_EXPENSIVE
+  - platform: state
+    entity_id: sensor.electricity_price_tibber
+    attribute: price_level
+    to: EXPENSIVE
+  condition: []
+  action:
+  - type: turn_off
+    device_id: e5fc1b3b0a1e0dd669053f557b5f4020
+    entity_id: switch.insight_switch_1
+    domain: switch
+  mode: single
+- id: '1607365513652'
+  alias: Turn on floor heating
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.electricity_price_tibber
+    attribute: price_level
+    to: NORMAL
+  - platform: state
+    entity_id: sensor.electricity_price_tibber
+    attribute: price_level
+    to: CHEAP
+  - platform: state
+    entity_id: sensor.electricity_price_tibber
+    attribute: price_level
+    to: VERY_CHEAP
+  condition: []
+  action:
+  - type: turn_on
+    device_id: e5fc1b3b0a1e0dd669053f557b5f4020
+    entity_id: switch.insight_switch_1
+    domain: switch
+  mode: single

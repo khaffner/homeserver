@@ -1,0 +1,64 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+discovery:
+  ignore:
+    - homekit
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+tibber:
+  access_token: !secret tibber_token
+
+wemo:
+  discovery: false
+  static:
+    - 192.168.100.105
+
+
+webostv:
+  host: 192.168.100.183
+  name: Living Room TV
+
+sensor:
+  - platform: citybikes
+    radius: 500
+
+  - platform: command_line
+    name: "Electricity Prices"
+    command: !secret entsoe_command
+    # If errors occur, make sure configuration file is encoded as UTF-8
+    unit_of_measurement: "Øre/kWh"
+    scan_interval: 1800
+    json_attributes:
+      - PriceNow
+      - PriceIn12Hours
+        
+  - platform: template
+    sensors:    
+      electricityprice_level:
+        friendly_name: "Electricity Price Level"
+        value_template: "{{states.sensor.electricity_price_tibber.attributes.price_level | capitalize | replace('_',' ') }}"
+    
+      electricityprice_ore_now:
+        friendly_name: "Electricity Price Now"
+        unit_of_measurement: 'Øre/kWh'
+        value_template: "{{states.sensor.electricity_price_tibber.state | multiply(100) | round}}"
+      
+      electricityprice_ore_in_12_hours:
+        unit_of_measurement: 'Øre/kWh'
+        value_template: "{{ states.sensor.electricity_prices.attributes.PriceIn12Hours }}"
+
+      insight_switch_1_w:
+        friendly_name: "Insight Switch 1"
+        unit_of_measurement: 'Watt'
+        value_template: "{{ states.switch.insight_switch_1.attributes.current_power_w | round }}"
+        
