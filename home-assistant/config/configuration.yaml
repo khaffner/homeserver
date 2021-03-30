@@ -16,7 +16,7 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 tibber:
-  access_token: !secret tibber_token
+  access_token: !env_var TIBBER_TOKEN
 
 wemo:
   discovery: false
@@ -34,7 +34,7 @@ sensor:
 
   - platform: command_line
     name: "Electricity Prices"
-    command: !secret entsoe_command
+    command: "pwsh /config/pwsh/ENTSO-E.ps1"
     # If errors occur, make sure configuration file is encoded as UTF-8
     unit_of_measurement: "Øre/kWh"
     scan_interval: 1800

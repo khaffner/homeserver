@@ -13,7 +13,7 @@ $startentsoe = Get-Date $start -Format $entsoetimeformat
 $endentsoe = Get-Date $end -Format $entsoetimeformat
 
 $baseurl = "https://transparency.entsoe.eu"
-$token = $args[0]
+$token = $ENV:ENTSOE_TOKEN
 $Period = "periodStart=$startentsoe&periodEnd=$endentsoe"
 $url = "$baseurl/api?documentType=A44&in_Domain=10YNO-1--------2&out_Domain=10YNO-1--------2&$Period&securityToken=$token"
 

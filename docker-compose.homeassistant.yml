@@ -11,3 +11,5 @@ services:
       - 8123:8123
     build:
       context: ./home-assistant
+    env_file:
+      - ./home-assistant/secrets.env
