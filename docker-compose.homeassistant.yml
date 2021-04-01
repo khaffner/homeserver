@@ -7,8 +7,6 @@ services:
       - '/etc/localtime:/etc/localtime:ro'
     network_mode: host
     restart: unless-stopped
-    ports:
-      - 8123:8123
     build:
       context: ./home-assistant
     env_file:
