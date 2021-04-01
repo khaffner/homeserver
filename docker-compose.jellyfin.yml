@@ -8,3 +8,9 @@ services:
     network_mode: host
     restart: unless-stopped
     image: jellyfin/jellyfin
+volumes:
+  jellyfin_cache:
+  jellyfin_config:
+  server_share_data:
+    external: true
+    name: server_share_data
