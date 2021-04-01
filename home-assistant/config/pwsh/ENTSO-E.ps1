@@ -19,8 +19,8 @@ $url = "$baseurl/api?documentType=A44&in_Domain=10YNO-1--------2&out_Domain=10YN
 
 $r = Invoke-RestMethod -Method Get -Uri $url
 
-$currency = Invoke-RestMethod -Method Get -Uri 'https://api.exchangeratesapi.io/latest'
-[decimal]$rate = $currency.rates.NOK
+$eurnok = Invoke-RestMethod -Uri "https://data.norges-bank.no/api/data/EXR/B.EUR.NOK.SP?lastNObservations=1&format=sdmx-json"
+[decimal]$rate = $eurnok.data.dataSets[0].series.'0:0:0:0'.observations.'0'[0]
 
 $Points = @()
 $Time = (Get-Date -Date $Start -Hour 0 -Minute 0 -Second -0 -Millisecond 0).DateTime
