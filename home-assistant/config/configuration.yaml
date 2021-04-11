@@ -18,6 +18,9 @@ scene: !include scenes.yaml
 tibber:
   access_token: !env_var TIBBER_TOKEN
 
+# https://github.com/Danielhiversen/home_assistant_tibber_custom/
+tibber_custom:
+
 wemo:
   discovery: false
   static:

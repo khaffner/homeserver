@@ -1,4 +1,4 @@
-FROM homeassistant/home-assistant:2021.3.4
+FROM homeassistant/home-assistant:2021.4.3
 
 
 RUN apk add --no-cache \
@@ -32,3 +32,6 @@ RUN chmod +x /opt/microsoft/powershell/7/pwsh
 
 # Create the symbolic link that points to pwsh
 RUN ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
+
+# After first setup, run this manually
+# https://hacs.xyz/docs/installation/installation/
