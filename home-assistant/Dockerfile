@@ -1,4 +1,4 @@
-FROM homeassistant/home-assistant:2021.4.3
+FROM homeassistant/home-assistant:2021.7
 
 
 RUN apk add --no-cache \
