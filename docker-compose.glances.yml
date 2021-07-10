@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   glances:
+    container_name: glances
+    hostname: SERVER-MON
     restart: unless-stopped
     ports:
       - '61208:61208'
