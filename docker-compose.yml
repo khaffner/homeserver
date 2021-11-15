@@ -19,7 +19,7 @@ services:
     volumes:
         - '/var/run/docker.sock:/var/run/docker.sock'
         - '/home/kevin/Dockervolumes/portainer:/data'
-    image: 'portainer/portainer-ce:2.1.1'
+    image: 'portainer/portainer-ce:2.9.2'
 ###############################################################
   grocy:
     image: lscr.io/linuxserver/grocy
