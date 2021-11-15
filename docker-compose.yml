@@ -87,13 +87,16 @@ services:
       - 4430:4430
     restart: unless-stopped
 ###############################################################
-  organizr:
-    container_name: organizr
-    volumes:
-      - '/home/kevin/Dockervolumes/organizr/:/config'
+  heimdall:
+    image: lscr.io/linuxserver/heimdall
+    container_name: heimdall
     environment:
-      - PGID=1000
       - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+    volumes:
+      - /home/kevin/Dockervolumes/heimdall:/config
     ports:
-      - '80:80'
-    image: organizr/organizr
+      - 80:80
+      - 443:443
+    restart: unless-stopped
