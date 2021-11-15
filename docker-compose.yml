@@ -1,0 +1,99 @@
+version: '3.8'
+services:
+###############################################################
+  uptime-kuma:
+    restart: unless-stopped
+    ports:
+        - '3001:3001'
+    volumes:
+        - '/home/kevin/Dockervolumes/uptime-kuma/:/app/data'
+    container_name: uptime-kuma
+    image: 'louislam/uptime-kuma:1'
+###############################################################
+  portainer-ce:
+    ports:
+        - '8000:8000'
+        - '9000:9000'
+    container_name: portainer-ce
+    restart: unless-stopped
+    volumes:
+        - '/var/run/docker.sock:/var/run/docker.sock'
+        - '/home/kevin/Dockervolumes/portainer:/data'
+    image: 'portainer/portainer-ce:2.1.1'
+###############################################################
+  grocy:
+    image: lscr.io/linuxserver/grocy
+    container_name: grocy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+    volumes:
+      - /home/kevin/Dockervolumes/grocy/:/config
+    ports:
+      - 9283:9283
+    restart: unless-stopped
+###############################################################
+  home-assistant:
+    container_name: home-assistant
+    volumes:
+      - '/home/kevin/Dockervolumes/home-assistant/:/config'
+      - '/etc/localtime:/etc/localtime:ro'
+    network_mode: host
+    restart: unless-stopped
+    build:
+      context: ./home-assistant
+    env_file:
+      - ./home-assistant/secrets.env
+###############################################################
+  glances:
+    container_name: glances
+    hostname: SERVER-MON
+    restart: unless-stopped
+    ports:
+      - '61208:61208'
+    environment:
+      - GLANCES_OPT=-w
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    pid: host
+    image: 'nicolargo/glances:latest'
+###############################################################
+  duckdns:
+    container_name: duckdns
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+    restart: unless-stopped
+    image: ghcr.io/linuxserver/duckdns:amd64-version-3a3f0388 # latest at the moment
+    env_file: 
+      - ./duckdns/secrets.env
+###############################################################
+  deconz:
+    container_name: deconz
+    image: marthoc/deconz
+    privileged: true
+    environment: 
+      - TZ=Europe/Oslo
+      - DECONZ_WEB_PORT=8080
+      - DECONZ_WS_PORT=4430
+    volumes: 
+      - /home/kevin/Dockervolumes/deconz/:/root/.local/share/dresden-elektronik/deCONZ
+    devices:
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00:/dev/ttyUSB0
+    ports:
+      - 8080:8080
+      - 4430:4430
+    restart: unless-stopped
+###############################################################
+  organizr:
+    container_name: organizr
+    volumes:
+      - '/home/kevin/Dockervolumes/organizr/:/config'
+    environment:
+      - PGID=1000
+      - PUID=1000
+    ports:
+      - '80:80'
+    image: organizr/organizr
