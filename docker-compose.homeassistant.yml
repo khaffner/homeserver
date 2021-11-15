@@ -16,6 +16,7 @@ services:
   deconz:
     container_name: deconz
     image: marthoc/deconz
+    privileged: true
     environment: 
       - TZ=Europe/Oslo
       - DECONZ_WEB_PORT=8080
