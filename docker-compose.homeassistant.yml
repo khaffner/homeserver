@@ -23,7 +23,7 @@ services:
     volumes: 
       - /home/kevin/Dockervolumes/deconz/:/root/.local/share/dresden-elektronik/deCONZ
     devices:
-      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00:/dev/ttyUSB0
     ports:
       - 8080:8080
       - 4430:4430
