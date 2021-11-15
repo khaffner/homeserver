@@ -1,5 +1,6 @@
 version: '3.8'
 services:
+##########################################################################
   home-assistant:
     container_name: home-assistant
     volumes:
@@ -11,3 +12,19 @@ services:
       context: ./home-assistant
     env_file:
       - ./home-assistant/secrets.env
+##########################################################################
+  deconz:
+    container_name: deconz
+    image: marthoc/deconz
+    environment: 
+      - TZ=Europe/Oslo
+      - DECONZ_WEB_PORT=8080
+      - DECONZ_WS_PORT=4430
+    volumes: 
+      - /home/kevin/Dockervolumes/zigbee/:/root/.local/share/dresden-elektronik/deCONZ
+    devices:
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00
+    ports:
+      - 8080:8080
+      - 4430:4430
+    restart: unless-stopped
