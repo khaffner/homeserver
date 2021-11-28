@@ -72,14 +72,14 @@ services:
 ###############################################################
   deconz:
     container_name: deconz
-    image: marthoc/deconz
+    image: deconzcommunity/deconz:stable
     privileged: true
     environment: 
       - TZ=Europe/Oslo
       - DECONZ_WEB_PORT=8080
       - DECONZ_WS_PORT=4430
     volumes: 
-      - /home/kevin/Dockervolumes/deconz/:/root/.local/share/dresden-elektronik/deCONZ
+      - /home/kevin/Dockervolumes/deconz/:/opt/deCONZ
     devices:
       - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00:/dev/ttyUSB0
     ports:
