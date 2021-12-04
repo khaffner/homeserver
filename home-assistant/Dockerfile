@@ -1,6 +1,6 @@
 FROM homeassistant/home-assistant:2021.11.5
 
-# As of 2021.11 home-assistant is based on alpine 3.14.
+# As of 2021.11 home-assistant is based on alpine 3.14: https://github.com/home-assistant/docker-base#base-images
 # Pwsh must be compatible, see https://docs.microsoft.com/en-us/powershell/scripting/install/install-alpine?view=powershell-7.2#supported-versions
 # But also, see the tag listing here: https://hub.docker.com/_/microsoft-powershell
 # The current alpine version might just be there.
