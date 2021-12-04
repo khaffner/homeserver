@@ -138,8 +138,8 @@ sensor:
         friendly_name: Electricity price in EUR in 12 hours
         unit_of_measurement: "EUR"
         value_template: >
-          {% if now().hour < 13 %}
-          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour]}}
+          {% if now().hour <= 11 %}
+          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour+12]}}
           {%- else -%}
           {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-12]}}
           {%- endif %}
