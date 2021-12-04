@@ -1,42 +1,331 @@
-- id: '1607365453210'
-  alias: Turn off floor heating
+- id: '1637497305401'
+  alias: Sunset
   description: ''
   trigger:
+  - platform: sun
+    event: sunset
+    offset: '0'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id:
+      - light.corner_lamp
+      - light.color_temperature_light_11
+    data:
+      brightness_pct: 100
+      transition: 10
+  mode: single
+- id: '1637497527983'
+  alias: Night light dim
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.color_temperature_light_11
+    data:
+      brightness_pct: 10
+  mode: single
+- id: '1637598552629'
+  alias: Sunrise
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: '0'
+  condition: []
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: light.color_temperature_light_11
+  mode: single
+- id: '1637599717618'
+  alias: Morning alarm
+  description: Bedroom lights and radio to wake up
+  trigger:
+  - platform: time
+    at: 06:00
+    id: Early
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_speaker
+    data:
+      media_content_id: http://lyd.nrk.no/nrk_radio_p3_mp3_h
+      media_content_type: channel
+  - service: light.turn_on
+    target:
+      entity_id: light.color_temperature_light_14
+    data:
+      brightness_pct: 100
+      kelvin: 6500
+  mode: single
+- id: '1637602345125'
+  alias: Electricity price alert
+  description: 'When price goes FROM normal, to act on it. Do a laundry if cheap,
+    turn off floor heating if expensive, etc. '
+  trigger:
   - platform: state
-    entity_id: sensor.electricity_price_tibber
+    entity_id: sensor.tibber
+    id: Non-normal_electricity_price
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
     attribute: price_level
-    to: VERY_EXPENSIVE
-  - platform: state
-    entity_id: sensor.electricity_price_tibber
-    attribute: price_level
-    to: EXPENSIVE
+  condition: []
+  action:
+  - service: notify.mobile_app_galaxy_s20_plus
+    data:
+      title: Heads up
+      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
+        | lower }}
+  - service: notify.mobile_app_sm_g970f
+    data:
+      title: Heads up
+      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
+        | lower }}
+  mode: single
+- id: '1637607890866'
+  alias: Switch Office Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_office_off
+    event_data:
+      id: dimmer_switch_office
+      event: 4000
   condition: []
   action:
   - type: turn_off
-    device_id: e5fc1b3b0a1e0dd669053f557b5f4020
-    entity_id: switch.insight_switch_1
-    domain: switch
+    device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    entity_id: light.color_temperature_light_15
+    domain: light
   mode: single
-- id: '1607365513652'
-  alias: Turn on floor heating
+- id: '1637607982481'
+  alias: Switch Office Dim Up
   description: ''
   trigger:
-  - platform: state
-    entity_id: sensor.electricity_price_tibber
-    attribute: price_level
-    to: NORMAL
-  - platform: state
-    entity_id: sensor.electricity_price_tibber
-    attribute: price_level
-    to: CHEAP
-  - platform: state
-    entity_id: sensor.electricity_price_tibber
-    attribute: price_level
-    to: VERY_CHEAP
+  - platform: event
+    event_type: deconz_event
+    id: switch_office_dim_up
+    event_data:
+      id: dimmer_switch_office
+      event: 2000
+  condition: []
+  action:
+  - device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    domain: light
+    entity_id: light.color_temperature_light_15
+    type: brightness_increase
+  mode: single
+- id: '1637608013545'
+  alias: Switch Office Dim Down
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_office_dim_down
+    event_data:
+      id: dimmer_switch_office
+      event: 3000
+  condition: []
+  action:
+  - device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    domain: light
+    entity_id: light.color_temperature_light_15
+    type: brightness_decrease
+  mode: single
+- id: '1637608281691'
+  alias: Switch Office On
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_office_on
+    event_data:
+      id: dimmer_switch_office
+      event: 1000
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      kelvin: 2700
+      brightness_pct: 100
+    target:
+      entity_id: light.color_temperature_light_15
+  mode: single
+- id: '1637607890867'
+  alias: Switch Bedroom Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_bedroom_off
+    event_data:
+      id: dimmer_switch_bedroom
+      event: 4000
+  condition: []
+  action:
+  - type: turn_off
+    device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    entity_id: light.color_temperature_light_14
+    domain: light
+  mode: single
+- id: '1637607982482'
+  alias: Switch Bedroom Dim Up
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_bedroom_dim_up
+    event_data:
+      id: dimmer_switch_bedroom
+      event: 2000
+  condition: []
+  action:
+  - device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    domain: light
+    entity_id: light.color_temperature_light_14
+    type: brightness_increase
+  mode: single
+- id: '1637608013547'
+  alias: Switch Bedroom Dim Down
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_bedroom_dim_down
+    event_data:
+      id: dimmer_switch_bedroom
+      event: 3000
+  condition: []
+  action:
+  - device_id: a88c31e33af2f4c62bf180b8b5dfbd86
+    domain: light
+    entity_id: light.color_temperature_light_14
+    type: brightness_decrease
+  mode: single
+- id: '1637608281692'
+  alias: Switch Bedroom On
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_bedroom_on
+    event_data:
+      id: dimmer_switch_bedroom
+      event: 1000
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.color_temperature_light_14
+    data:
+      kelvin: 2700
+      brightness_pct: 100
+  mode: single
+- id: '1637793189303'
+  alias: Storage room light on
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 2457cc5bab305feb916c9abc2220d82c
+    entity_id: binary_sensor.tradfri_motion_sensor
+    domain: binary_sensor
+    id: storage_room_motion_on
   condition: []
   action:
   - type: turn_on
-    device_id: e5fc1b3b0a1e0dd669053f557b5f4020
-    entity_id: switch.insight_switch_1
-    domain: switch
+    device_id: ffbc3354eec456f66e0aa8bab7590189
+    entity_id: light.dimmable_light_16
+    domain: light
+    flash: long
+    brightness_pct: 100
+  mode: single
+- id: '1637793223688'
+  alias: Storage room light off
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 2457cc5bab305feb916c9abc2220d82c
+    entity_id: binary_sensor.tradfri_motion_sensor
+    domain: binary_sensor
+    id: storage_room_motion_off
+  condition: []
+  action:
+  - type: turn_off
+    device_id: ffbc3354eec456f66e0aa8bab7590189
+    entity_id: light.dimmable_light_16
+    domain: light
+  mode: single
+- id: '1638003773112'
+  alias: Both have left the apartment
+  description: ''
+  trigger: []
+  condition:
+  - condition: device
+    device_id: 2fa108d111692868e73c0704ff762307
+    domain: device_tracker
+    entity_id: device_tracker.sm_g970f
+    type: is_not_home
+  - condition: device
+    device_id: c766bfff747c4a35f18c161ff6ead3c9
+    domain: device_tracker
+    entity_id: device_tracker.sm_g986b
+    type: is_not_home
+  action:
+  - service: script.good_night
+  mode: single
+- id: '1638103067320'
+  alias: Fridge Door Open
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: f46ce8be912189b4f630e8d0b2d8396e
+    entity_id: binary_sensor.openclose_23
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+    id: fridge_door_open
+  condition: []
+  action:
+  - service: light.toggle
+    target:
+      entity_id: light.kitchen_lights
+  mode: single
+- id: '1638208561467'
+  alias: Ten more pushups
+  description: ''
+  trigger:
+  - platform: time
+    at: 04:00
+  condition: []
+  action:
+  - repeat:
+      count: '10'
+      sequence:
+      - service: counter.increment
+        target:
+          entity_id: counter.pushups_to_do
   mode: single

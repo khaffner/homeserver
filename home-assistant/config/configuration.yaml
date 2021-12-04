@@ -15,53 +15,135 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
-tibber:
-  access_token: !env_var TIBBER_TOKEN
+homeassistant:
+  currency: NOK
 
-# https://github.com/Danielhiversen/home_assistant_tibber_custom/
-tibber_custom:
+wake_on_lan:
+
+nordpool:
+
+webostv:
+  host: 192.168.1.5
+  name: Living Room TV
+  turn_on_action:
+    service: wake_on_lan.send_magic_packet
+    data:
+      mac: 64:95:6C:25:93:31
 
 wemo:
   discovery: false
   static:
-    - 192.168.100.105
+    - 192.168.1.7
 
-
-webostv:
-  host: 192.168.100.183
-  name: Living Room TV
+light:
+  - platform: group
+    name: Kitchen Lights
+    entities:
+      - light.color_temperature_light_5
+      - light.color_temperature_light_6
+      - light.color_temperature_light_7
+  - platform: group
+    name: Hallway Lights
+    entities:
+      - light.color_temperature_light_8
+      - light.color_temperature_light_9
+      - light.color_temperature_light_10
+  - platform: group
+    name: Guest Room Lights
+    entities:
+      - light.color_temperature_light_17
+      - light.color_temperature_light_18
+      - light.color_temperature_light_19
+  - platform: group
+    name: Corner Lamp
+    entities:
+      - light.color_temperature_light_2
+      - light.color_temperature_light_4
 
 sensor:
+  - platform: miflora
+    mac: "C4:7C:8D:6B:F5:92"
+    name: "Buskleif Myntestad"
+  
+  # https://github.com/custom-components/nordpool
+  - platform: nordpool
+    VAT: true
+    currency: "EUR"
+    region: Oslo
+    precision: 3
+
   - platform: citybikes
-    radius: 500
+    radius: 1000
 
-  - platform: command_line
-    name: "Electricity Prices"
-    command: "pwsh /config/pwsh/ENTSO-E.ps1"
-    # If errors occur, make sure configuration file is encoded as UTF-8
-    unit_of_measurement: "Øre/kWh"
-    scan_interval: 1800
-    json_attributes:
-      - PriceNow
-      - PriceIn12Hours
-        
-  - platform: template
-    sensors:    
-      electricityprice_level:
-        friendly_name: "Electricity Price Level"
-        value_template: "{{states.sensor.electricity_price_tibber.attributes.price_level | capitalize | replace('_',' ') }}"
+  - platform: entur_public_transport
+    show_on_map: true
+    number_of_departures: 3
+    stop_ids:
+      - 'NSR:StopPlace:58194' # Økern T
+      - 'NSR:StopPlace:5914'  # Økern aldershjem
+    line_whitelist:
+      - 'RUT:Line:5'
+      - 'RUT:Line:60'
     
-      electricityprice_ore_now:
-        friendly_name: "Electricity Price Now"
-        unit_of_measurement: 'Øre/kWh'
-        value_template: "{{states.sensor.electricity_price_tibber.state | multiply(100) | round}}"
-      
-      electricityprice_ore_in_12_hours:
-        unit_of_measurement: 'Øre/kWh'
-        value_template: "{{ states.sensor.electricity_prices.attributes.PriceIn12Hours }}"
+  - platform: command_line
+    name: EUR/NOK conversion rate
+    command: curl -s "https://data.norges-bank.no/api/data/EXR/B.EUR.NOK.SP?lastNObservations=1&format=sdmx-json" | python3 -c 'import sys, json;print(json.load(sys.stdin)["data"]["dataSets"][0]["series"]["0:0:0:0"]["observations"]["0"][0])'
+    unit_of_measurement: "NOK"
+    scan_interval: 3600
 
-      insight_switch_1_w:
-        friendly_name: "Insight Switch 1"
-        unit_of_measurement: 'Watt'
-        value_template: "{{ states.switch.insight_switch_1.attributes.current_power_w | round }}"
-        
+  - platform: template
+    sensors:
+      precipitationprobability:
+        friendly_name: "Precipitation probability"
+        unit_of_measurement: "%"
+        value_template: "{{ state_attr('weather.home','forecast')[0].precipitation_probability | round }}"
+      washing_machine_watt_rounded:
+        friendly_name: "Washing machine watt rounded"
+        unit_of_measurement: "W"
+        value_template: "{{ states('sensor.washing_machine_current_power') | round }}"
+      electricityprice:
+        friendly_name: "Electricity Price"
+        unit_of_measurement: "Øre"
+        value_template: "{{ states('sensor.tibber') | multiply(100) | round }}"
+      electricitypricelevel:
+        friendly_name: "Electricity Price Level"
+        value_template: "{{ state_attr('sensor.tibber','price_level') | capitalize | replace('_',' ') }}"
+      firstsubwaydeparture:
+        friendly_name: "Next subway"
+        icon_template: mdi:subway-variant
+        unit_of_measurement: "min"
+        value_template: "{{ states('sensor.entur_okern_platform_2') }}"
+      nextsubwaydeparture:
+        friendly_name: "Second subway"
+        icon_template: mdi:subway-variant
+        unit_of_measurement: "min"
+        value_template: "{{ state_attr('sensor.entur_okern_platform_2','next_due_in') | replace('min','') }}"
+      electricitypriceemoji:
+        friendly_name: Electricity price emoji
+        value_template: >
+          {% if state_attr('sensor.tibber','price_level') == "VERY_CHEAP" %}
+            😄
+          {% elif state_attr('sensor.tibber','price_level') == "CHEAP" %}
+            🙂
+          {% elif state_attr('sensor.tibber','price_level') == "NORMAL" %}
+            😐
+          {% elif state_attr('sensor.tibber','price_level') == "EXPENSIVE" %}
+            😠
+          {% elif state_attr('sensor.tibber','price_level') == "VERY_EXPENSIVE" %}
+            🤬
+          {% else %}
+            ?
+          {% endif %}
+      electricitypriceeurin12hrs:
+        friendly_name: Electricity price in EUR in 12 hours
+        unit_of_measurement: "EUR"
+        value_template: >
+          {% if now().hour < 13 %}
+          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour]}}
+          {%- else -%}
+          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-12]}}
+          {%- endif %}
+      electricitypricenokin12hrs:
+        friendly_name: Electricity price in NOK(Øre) in 12 hours
+        unit_of_measurement: "Øre"
+        value_template: "{{ (states('sensor.electricitypriceeurin12hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.

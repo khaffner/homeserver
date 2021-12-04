@@ -21,19 +21,6 @@ services:
         - '/home/kevin/Dockervolumes/portainer:/data'
     image: 'portainer/portainer-ce:2.9.2'
 ###############################################################
-  grocy:
-    image: lscr.io/linuxserver/grocy
-    container_name: grocy
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Oslo
-    volumes:
-      - /home/kevin/Dockervolumes/grocy/:/config
-    ports:
-      - 9283:80
-    restart: unless-stopped
-###############################################################
   home-assistant:
     container_name: home-assistant
     volumes:
@@ -43,8 +30,6 @@ services:
     restart: unless-stopped
     build:
       context: ./home-assistant
-    env_file:
-      - ./home-assistant/secrets.env
 ###############################################################
   glances:
     container_name: glances
@@ -58,17 +43,6 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     pid: host
     image: 'nicolargo/glances:latest'
-###############################################################
-  duckdns:
-    container_name: duckdns
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Oslo
-    restart: unless-stopped
-    image: ghcr.io/linuxserver/duckdns:amd64-version-3a3f0388 # latest at the moment
-    env_file: 
-      - ./duckdns/secrets.env
 ###############################################################
   deconz:
     container_name: deconz
@@ -100,10 +74,4 @@ services:
       - 80:80
       - 443:443
     restart: unless-stopped
-###############################################################
-  doods:
-    container_name: doods
-    ports:
-        - '8081:8080'
-    image: 'snowzach/doods:latest'
-    restart: unless-stopped
+    
