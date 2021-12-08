@@ -192,6 +192,20 @@
                                 "type": "entities",
                                 "title": "Low batteries"
                             }
+                        },
+                        {
+                            "type": "conditional",
+                            "conditions": [
+                                {
+                                    "entity": "binary_sensor.updater",
+                                    "state": "on"
+                                }
+                            ],
+                            "card": {
+                                "type": "markdown",
+                                "content": "Update your shit, newest version is {{states.binary_sensor.updater.attributes.newest_version}}",
+                                "title": "Update available! \ud83e\udd73"
+                            }
                         }
                     ]
                 },
@@ -323,6 +337,26 @@
                                             }
                                         ],
                                         "square": false
+                                    }
+                                },
+                                {
+                                    "type": "conditional",
+                                    "conditions": [
+                                        {
+                                            "entity": "media_player.living_room_tv",
+                                            "state": "on"
+                                        }
+                                    ],
+                                    "card": {
+                                        "type": "gauge",
+                                        "entity": "sensor.tvvolume",
+                                        "min": 0,
+                                        "severity": {
+                                            "green": 0,
+                                            "yellow": 20,
+                                            "red": 30
+                                        },
+                                        "max": 50
                                     }
                                 }
                             ]
@@ -934,7 +968,8 @@
                             "entity": "sensor.electricitypricenokin12hrs",
                             "graph": "line",
                             "detail": 2,
-                            "icon": "mdi:currency-usd"
+                            "icon": "mdi:currency-usd",
+                            "name": "Electricity price in 12 hours"
                         }
                     ]
                 },
@@ -1064,13 +1099,13 @@
                                         {
                                             "type": "gauge",
                                             "entity": "sensor.server_tccd1_temperature",
-                                            "max": 80,
+                                            "max": 90,
                                             "min": 20,
                                             "name": "Temperature",
                                             "severity": {
                                                 "green": 0,
                                                 "yellow": 50,
-                                                "red": 65
+                                                "red": 70
                                             }
                                         },
                                         {
@@ -1153,93 +1188,102 @@
                                     ]
                                 },
                                 {
-                                    "type": "horizontal-stack",
-                                    "cards": [
+                                    "type": "conditional",
+                                    "conditions": [
                                         {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_acpitz_1_temperature",
-                                            "max": 80,
-                                            "min": 20,
-                                            "name": "Temperature",
-                                            "severity": {
-                                                "green": 0,
-                                                "yellow": 50,
-                                                "red": 65
-                                            }
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_cpu_used",
-                                            "min": 0,
-                                            "max": 100,
-                                            "name": "CPU",
-                                            "severity": {
-                                                "green": 0,
-                                                "yellow": 50,
-                                                "red": 75
-                                            }
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_ram_used_percent",
-                                            "min": 0,
-                                            "max": 100,
-                                            "severity": {
-                                                "green": 0,
-                                                "yellow": 50,
-                                                "red": 75
-                                            },
-                                            "name": "RAM"
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_thinkpad_1_fan_speed",
-                                            "min": 0,
-                                            "max": 4000,
-                                            "name": "Fan",
-                                            "severity": {
-                                                "green": 0,
-                                                "yellow": 2000,
-                                                "red": 3500
-                                            }
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_bat_bat0_charge",
-                                            "min": 0,
-                                            "max": 100,
-                                            "name": "Battery Internal",
-                                            "severity": {
-                                                "green": 50,
-                                                "yellow": 25,
-                                                "red": 0
-                                            }
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_bat_bat1_charge",
-                                            "min": 0,
-                                            "max": 100,
-                                            "severity": {
-                                                "green": 50,
-                                                "yellow": 25,
-                                                "red": 0
-                                            },
-                                            "name": "Battery External"
-                                        },
-                                        {
-                                            "type": "gauge",
-                                            "entity": "sensor.t570_bat_hidpp_battery_1_charge",
-                                            "min": 0,
-                                            "max": 100,
-                                            "name": "Mouse",
-                                            "severity": {
-                                                "green": 50,
-                                                "yellow": 25,
-                                                "red": 0
-                                            }
+                                            "entity": "sensor.t570_cpu_load",
+                                            "state_not": "unavailable"
                                         }
-                                    ]
+                                    ],
+                                    "card": {
+                                        "type": "horizontal-stack",
+                                        "cards": [
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_acpitz_1_temperature",
+                                                "max": 80,
+                                                "min": 20,
+                                                "name": "Temperature",
+                                                "severity": {
+                                                    "green": 0,
+                                                    "yellow": 50,
+                                                    "red": 65
+                                                }
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_cpu_used",
+                                                "min": 0,
+                                                "max": 100,
+                                                "name": "CPU",
+                                                "severity": {
+                                                    "green": 0,
+                                                    "yellow": 50,
+                                                    "red": 75
+                                                }
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_ram_used_percent",
+                                                "min": 0,
+                                                "max": 100,
+                                                "severity": {
+                                                    "green": 0,
+                                                    "yellow": 50,
+                                                    "red": 75
+                                                },
+                                                "name": "RAM"
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_thinkpad_1_fan_speed",
+                                                "min": 0,
+                                                "max": 4000,
+                                                "name": "Fan",
+                                                "severity": {
+                                                    "green": 0,
+                                                    "yellow": 2000,
+                                                    "red": 3500
+                                                }
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_bat_bat0_charge",
+                                                "min": 0,
+                                                "max": 100,
+                                                "name": "Battery Internal",
+                                                "severity": {
+                                                    "green": 50,
+                                                    "yellow": 25,
+                                                    "red": 0
+                                                }
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_bat_bat1_charge",
+                                                "min": 0,
+                                                "max": 100,
+                                                "severity": {
+                                                    "green": 50,
+                                                    "yellow": 25,
+                                                    "red": 0
+                                                },
+                                                "name": "Battery External"
+                                            },
+                                            {
+                                                "type": "gauge",
+                                                "entity": "sensor.t570_bat_hidpp_battery_1_charge",
+                                                "min": 0,
+                                                "max": 100,
+                                                "name": "Mouse",
+                                                "severity": {
+                                                    "green": 50,
+                                                    "yellow": 25,
+                                                    "red": 0
+                                                }
+                                            }
+                                        ]
+                                    }
                                 },
                                 {
                                     "type": "horizontal-stack",
