@@ -275,24 +275,6 @@
     entity_id: light.dimmable_light_16
     domain: light
   mode: single
-- id: '1638003773112'
-  alias: Both have left the apartment
-  description: ''
-  trigger: []
-  condition:
-  - condition: device
-    device_id: 2fa108d111692868e73c0704ff762307
-    domain: device_tracker
-    entity_id: device_tracker.sm_g970f
-    type: is_not_home
-  - condition: device
-    device_id: c766bfff747c4a35f18c161ff6ead3c9
-    domain: device_tracker
-    entity_id: device_tracker.sm_g986b
-    type: is_not_home
-  action:
-  - service: script.good_night
-  mode: single
 - id: '1638103067320'
   alias: Fridge Door Open
   description: ''
@@ -310,9 +292,10 @@
     id: fridge_door_open
   condition: []
   action:
-  - service: light.toggle
-    target:
-      entity_id: light.kitchen_lights
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.kitchen_speaker
+      message: Please close the fridge
   mode: single
 - id: '1638208561467'
   alias: Ten more pushups
@@ -328,4 +311,43 @@
       - service: counter.increment
         target:
           entity_id: counter.pushups_to_do
+  mode: single
+- id: '1638660021716'
+  alias: Reset TV volume
+  description: In case another volume got turned down and TV volume too far up. Reset
+    TV volume to encourage not using other volume
+  trigger:
+  - platform: state
+    entity_id: media_player.living_room_tv
+    id: livingroomtv_sourcechange
+    attribute: source
+  condition: []
+  action:
+  - service: media_player.volume_set
+    target:
+      entity_id: media_player.living_room_tv
+    data:
+      volume_level: 0.15
+  mode: single
+- id: '1638819876867'
+  alias: Freezer Door Open
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: cdefbd90cd630be260a0e4431d1a3df6
+    entity_id: binary_sensor.openclose_24
+    domain: binary_sensor
+    id: freezer_door_open
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.kitchen_speaker
+      message: Please close the freezer
   mode: single
