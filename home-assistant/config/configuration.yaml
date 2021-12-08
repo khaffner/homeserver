@@ -20,7 +20,11 @@ homeassistant:
 
 wake_on_lan:
 
+# https://github.com/custom-components/nordpool
 nordpool:
+
+air_quality:
+  - platform: norway_air
 
 webostv:
   host: 192.168.1.5
@@ -93,6 +97,10 @@ sensor:
 
   - platform: template
     sensors:
+      tvvolume:
+        friendly_name: TV Volume
+        unit_of_measurement: "%"
+        value_template: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
       precipitationprobability:
         friendly_name: "Precipitation probability"
         unit_of_measurement: "%"
