@@ -1,6 +1,21 @@
 version: '3.8'
 services:
 ###############################################################
+  traefik:
+    restart: unless-stopped
+    image: traefik:2.5.4
+    container_name: traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 8080:8080
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+###############################################################
   uptime-kuma:
     restart: unless-stopped
     ports:
@@ -9,6 +24,11 @@ services:
         - '/home/kevin/Dockervolumes/uptime-kuma/:/app/data'
     container_name: uptime-kuma
     image: 'louislam/uptime-kuma:1'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptimekuma.rule=Host(`uptimekuma.server.local`)"
+      - "traefik.http.routers.uptimekuma.entrypoints=web"
+      - "traefik.http.services.uptimekuma.loadbalancer.server.port=3001"
 ###############################################################
   portainer-ce:
     ports:
@@ -20,6 +40,11 @@ services:
         - '/var/run/docker.sock:/var/run/docker.sock'
         - '/home/kevin/Dockervolumes/portainer:/data'
     image: 'portainer/portainer-ce:2.9.2'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.server.local`)"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 ###############################################################
   home-assistant:
     container_name: home-assistant
@@ -30,6 +55,11 @@ services:
     restart: unless-stopped
     build:
       context: ./home-assistant
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.server.local`)"
+      - "traefik.http.routers.homeassistant.entrypoints=web"
+      - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
 ###############################################################
   glances:
     container_name: glances
@@ -43,6 +73,11 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     pid: host
     image: 'nicolargo/glances:latest'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glances.rule=Host(`glances.server.local`)"
+      - "traefik.http.routers.glances.entrypoints=web"
+      - "traefik.http.services.glances.loadbalancer.server.port=61208"
 ###############################################################
   deconz:
     container_name: deconz
@@ -50,16 +85,21 @@ services:
     privileged: true
     environment: 
       - TZ=Europe/Oslo
-      - DECONZ_WEB_PORT=8080
+      - DECONZ_WEB_PORT=8081
       - DECONZ_WS_PORT=4430
     volumes: 
       - /home/kevin/Dockervolumes/deconz/:/opt/deCONZ
     devices:
       - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2231183-if00:/dev/ttyUSB0
     ports:
-      - 8080:8080
+      - 8081:8081
       - 4430:4430
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.deconz.rule=Host(`deconz.server.local`)"
+      - "traefik.http.routers.deconz.entrypoints=web"
+      - "traefik.http.services.deconz.loadbalancer.server.port=8081"
 ###############################################################
   heimdall:
     image: lscr.io/linuxserver/heimdall
@@ -71,7 +111,12 @@ services:
     volumes:
       - /home/kevin/Dockervolumes/heimdall:/config
     ports:
-      - 80:80
+      - 81:80
       - 443:443
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.server.local`)"
+      - "traefik.http.routers.heimdall.entrypoints=web"
+      - "traefik.http.services.heimdall.loadbalancer.server.port=81"
     
