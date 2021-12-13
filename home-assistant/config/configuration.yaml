@@ -142,16 +142,16 @@ sensor:
           {% else %}
             ?
           {% endif %}
-      electricitypriceeurin12hrs:
-        friendly_name: Electricity price in EUR in 12 hours
+      electricitypriceeurin10hrs:
+        friendly_name: Electricity price in EUR in 10 hours
         unit_of_measurement: "EUR"
         value_template: >
-          {% if now().hour <= 11 %}
-          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour+12]}}
+          {% if now().hour < 14 %}
+          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour+10]}}
           {%- else -%}
-          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-12]}}
+          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-14]}}
           {%- endif %}
-      electricitypricenokin12hrs:
-        friendly_name: Electricity price in NOK(Øre) in 12 hours
+      electricitypricenokin10hrs:
+        friendly_name: Electricity price in NOK(Øre) in 10 hours
         unit_of_measurement: "Øre"
-        value_template: "{{ (states('sensor.electricitypriceeurin12hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
+        value_template: "{{ (states('sensor.electricitypriceeurin10hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
