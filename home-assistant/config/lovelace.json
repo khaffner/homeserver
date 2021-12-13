@@ -9,210 +9,218 @@
                     "title": "Overview",
                     "path": "overview",
                     "icon": "mdi:exclamation",
+                    "type": "panel",
                     "badges": [],
                     "cards": [
                         {
-                            "type": "grid",
+                            "type": "vertical-stack",
                             "cards": [
                                 {
+                                    "type": "weather-forecast",
+                                    "entity": "weather.home",
+                                    "show_forecast": false
+                                },
+                                {
+                                    "type": "grid",
+                                    "cards": [
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "media_player.all_speakers",
+                                                    "state_not": "off"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "media-control",
+                                                "entity": "media_player.all_speakers"
+                                            }
+                                        },
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "media_player.big_bathroom_speaker",
+                                                    "state_not": "off"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "media-control",
+                                                "entity": "media_player.big_bathroom_speaker"
+                                            }
+                                        },
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "media_player.kitchen_speaker",
+                                                    "state_not": "off"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "media-control",
+                                                "entity": "media_player.kitchen_speaker"
+                                            }
+                                        },
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "media_player.small_bathroom_speaker",
+                                                    "state_not": "off"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "media-control",
+                                                "entity": "media_player.small_bathroom_speaker"
+                                            }
+                                        },
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "media_player.cc_living_room_tv",
+                                                    "state_not": "off"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "media-control",
+                                                "entity": "media_player.cc_living_room_tv"
+                                            }
+                                        }
+                                    ],
+                                    "square": false,
+                                    "columns": 2
+                                },
+                                {
                                     "type": "conditional",
                                     "conditions": [
                                         {
-                                            "entity": "media_player.all_speakers",
-                                            "state_not": "off"
+                                            "entity": "sensor.electricitypricelevel",
+                                            "state_not": "Normal"
                                         }
                                     ],
                                     "card": {
-                                        "type": "media-control",
-                                        "entity": "media_player.all_speakers"
+                                        "type": "grid",
+                                        "cards": [
+                                            {
+                                                "type": "entity",
+                                                "entity": "sensor.electricityprice",
+                                                "icon": "mdi:currency-usd"
+                                            },
+                                            {
+                                                "type": "entity",
+                                                "entity": "sensor.electricitypriceemoji",
+                                                "name": "Mood",
+                                                "icon": "mdi:currency-usd"
+                                            }
+                                        ],
+                                        "columns": 2,
+                                        "square": false
+                                    }
+                                },
+                                {
+                                    "type": "grid",
+                                    "cards": [
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "binary_sensor.openclose_23",
+                                                    "state": "on"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "button",
+                                                "tap_action": {
+                                                    "action": "none"
+                                                },
+                                                "entity": "binary_sensor.openclose_23",
+                                                "show_state": false,
+                                                "icon": "mdi:fridge-alert",
+                                                "hold_action": {
+                                                    "action": "none"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "conditional",
+                                            "conditions": [
+                                                {
+                                                    "entity": "binary_sensor.openclose_24",
+                                                    "state": "on"
+                                                }
+                                            ],
+                                            "card": {
+                                                "type": "button",
+                                                "tap_action": {
+                                                    "action": "none"
+                                                },
+                                                "entity": "binary_sensor.openclose_24",
+                                                "show_state": false,
+                                                "icon": "mdi:fridge-alert",
+                                                "hold_action": {
+                                                    "action": "none"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "columns": 2,
+                                    "square": false
+                                },
+                                {
+                                    "type": "entity-filter",
+                                    "show_empty": false,
+                                    "entities": [
+                                        "sensor.bedroom_radiator_battery_level",
+                                        "sensor.big_bathroom_battery_level",
+                                        "sensor.dimmer_switch_bedroom_battery_level",
+                                        "sensor.kitchen_hood_battery_level",
+                                        "sensor.lenovo_tab_battery_level",
+                                        "sensor.living_room_radiator_battery_level",
+                                        "sensor.openclose_23_battery_level",
+                                        "sensor.openclose_24_battery_level",
+                                        "sensor.storage_room_motion_sensor_battery_level",
+                                        "sensor.sm_g970f_battery_level",
+                                        "sensor.sm_g986b_battery_level",
+                                        "sensor.t570_bat_bat0_charge",
+                                        "sensor.t570_bat_bat1_charge",
+                                        "sensor.t570_bat_hidpp_battery_0_charge",
+                                        "sensor.t570_bat_hidpp_battery_1_charge"
+                                    ],
+                                    "state_filter": [
+                                        {
+                                            "operator": "<",
+                                            "value": 25
+                                        }
+                                    ],
+                                    "card": {
+                                        "type": "entities",
+                                        "title": "Low batteries"
                                     }
                                 },
                                 {
                                     "type": "conditional",
                                     "conditions": [
                                         {
-                                            "entity": "media_player.big_bathroom_speaker",
-                                            "state_not": "off"
-                                        }
-                                    ],
-                                    "card": {
-                                        "type": "media-control",
-                                        "entity": "media_player.big_bathroom_speaker"
-                                    }
-                                },
-                                {
-                                    "type": "conditional",
-                                    "conditions": [
-                                        {
-                                            "entity": "media_player.kitchen_speaker",
-                                            "state_not": "off"
-                                        }
-                                    ],
-                                    "card": {
-                                        "type": "media-control",
-                                        "entity": "media_player.kitchen_speaker"
-                                    }
-                                },
-                                {
-                                    "type": "conditional",
-                                    "conditions": [
-                                        {
-                                            "entity": "media_player.small_bathroom_speaker",
-                                            "state_not": "off"
-                                        }
-                                    ],
-                                    "card": {
-                                        "type": "media-control",
-                                        "entity": "media_player.small_bathroom_speaker"
-                                    }
-                                },
-                                {
-                                    "type": "conditional",
-                                    "conditions": [
-                                        {
-                                            "entity": "media_player.cc_living_room_tv",
-                                            "state_not": "off"
-                                        }
-                                    ],
-                                    "card": {
-                                        "type": "media-control",
-                                        "entity": "media_player.cc_living_room_tv"
-                                    }
-                                }
-                            ],
-                            "columns": 1,
-                            "square": false
-                        },
-                        {
-                            "type": "weather-forecast",
-                            "entity": "weather.home"
-                        },
-                        {
-                            "type": "conditional",
-                            "conditions": [
-                                {
-                                    "entity": "sensor.electricitypricelevel",
-                                    "state_not": "Normal"
-                                }
-                            ],
-                            "card": {
-                                "type": "grid",
-                                "cards": [
-                                    {
-                                        "type": "entity",
-                                        "entity": "sensor.electricityprice",
-                                        "icon": "mdi:currency-usd"
-                                    },
-                                    {
-                                        "type": "entity",
-                                        "entity": "sensor.electricitypriceemoji",
-                                        "name": "Mood",
-                                        "icon": "mdi:currency-usd"
-                                    }
-                                ],
-                                "columns": 2,
-                                "square": false
-                            }
-                        },
-                        {
-                            "type": "grid",
-                            "cards": [
-                                {
-                                    "type": "conditional",
-                                    "conditions": [
-                                        {
-                                            "entity": "binary_sensor.openclose_23",
+                                            "entity": "binary_sensor.updater",
                                             "state": "on"
                                         }
                                     ],
                                     "card": {
-                                        "type": "button",
-                                        "tap_action": {
-                                            "action": "none"
-                                        },
-                                        "entity": "binary_sensor.openclose_23",
-                                        "show_state": false,
-                                        "icon": "mdi:fridge-alert",
-                                        "hold_action": {
-                                            "action": "none"
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "conditional",
-                                    "conditions": [
-                                        {
-                                            "entity": "binary_sensor.openclose_24",
-                                            "state": "on"
-                                        }
-                                    ],
-                                    "card": {
-                                        "type": "button",
-                                        "tap_action": {
-                                            "action": "none"
-                                        },
-                                        "entity": "binary_sensor.openclose_24",
-                                        "show_state": false,
-                                        "icon": "mdi:fridge-alert",
-                                        "hold_action": {
-                                            "action": "none"
-                                        }
+                                        "type": "markdown",
+                                        "content": "Update your shit, newest version is {{states.binary_sensor.updater.attributes.newest_version}}",
+                                        "title": "Update available! \ud83e\udd73"
                                     }
                                 }
-                            ],
-                            "columns": 2,
-                            "square": false
-                        },
-                        {
-                            "type": "entity-filter",
-                            "show_empty": false,
-                            "entities": [
-                                "sensor.bedroom_radiator_battery_level",
-                                "sensor.big_bathroom_battery_level",
-                                "sensor.dimmer_switch_bedroom_battery_level",
-                                "sensor.kitchen_hood_battery_level",
-                                "sensor.lenovo_tab_battery_level",
-                                "sensor.living_room_radiator_battery_level",
-                                "sensor.openclose_23_battery_level",
-                                "sensor.openclose_24_battery_level",
-                                "sensor.storage_room_motion_sensor_battery_level",
-                                "sensor.sm_g970f_battery_level",
-                                "sensor.sm_g986b_battery_level",
-                                "sensor.t570_bat_bat0_charge",
-                                "sensor.t570_bat_bat1_charge",
-                                "sensor.t570_bat_hidpp_battery_1_charge"
-                            ],
-                            "state_filter": [
-                                {
-                                    "operator": "<",
-                                    "value": 25
-                                }
-                            ],
-                            "card": {
-                                "type": "entities",
-                                "title": "Low batteries"
-                            }
-                        },
-                        {
-                            "type": "conditional",
-                            "conditions": [
-                                {
-                                    "entity": "binary_sensor.updater",
-                                    "state": "on"
-                                }
-                            ],
-                            "card": {
-                                "type": "markdown",
-                                "content": "Update your shit, newest version is {{states.binary_sensor.updater.attributes.newest_version}}",
-                                "title": "Update available! \ud83e\udd73"
-                            }
+                            ]
                         }
                     ]
                 },
                 {
                     "title": "Living Room",
                     "path": "living-room",
-                    "icon": "mdi:television",
+                    "icon": "mdi:sofa",
                     "visible": [
                         {
                             "user": "7f702db65ced48ce8de7b2e87008c5f5"
@@ -383,9 +391,15 @@
                                     "type": "light",
                                     "entity": "light.color_temperature_light_11",
                                     "name": " "
+                                },
+                                {
+                                    "type": "light",
+                                    "entity": "light.dimmable_light_3",
+                                    "name": " ",
+                                    "icon": "mdi:ceiling-light"
                                 }
                             ],
-                            "columns": 3,
+                            "columns": 2,
                             "square": false
                         },
                         {
@@ -965,11 +979,12 @@
                         },
                         {
                             "type": "sensor",
-                            "entity": "sensor.electricitypricenokin12hrs",
+                            "entity": "sensor.electricitypricenokin10hrs",
                             "graph": "line",
                             "detail": 2,
                             "icon": "mdi:currency-usd",
-                            "name": "Electricity price in 12 hours"
+                            "name": "Electricity price in 10 hours",
+                            "hours_to_show": 20
                         }
                     ]
                 },
@@ -1020,6 +1035,9 @@
                                 },
                                 {
                                     "entity": "light.color_temperature_light_2"
+                                },
+                                {
+                                    "entity": "light.dimmable_light_3"
                                 }
                             ],
                             "title": "Lights",
@@ -1272,7 +1290,7 @@
                                             },
                                             {
                                                 "type": "gauge",
-                                                "entity": "sensor.t570_bat_hidpp_battery_1_charge",
+                                                "entity": "sensor.t570_bat_hidpp_battery_0_charge",
                                                 "min": 0,
                                                 "max": 100,
                                                 "name": "Mouse",
@@ -1334,14 +1352,14 @@
                                                 "yellow": 20,
                                                 "red": 10
                                             },
-                                            "name": "Living room radiator"
+                                            "name": "Living room"
                                         },
                                         {
                                             "type": "gauge",
                                             "entity": "sensor.bedroom_radiator_battery_level",
                                             "min": 0,
                                             "max": 100,
-                                            "name": "Bedroom radiator",
+                                            "name": "Bedroom",
                                             "severity": {
                                                 "green": 50,
                                                 "yellow": 20,
