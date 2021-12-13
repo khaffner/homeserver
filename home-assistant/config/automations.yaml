@@ -74,8 +74,8 @@
   mode: single
 - id: '1637602345125'
   alias: Electricity price alert
-  description: 'When price goes FROM normal, to act on it. Do a laundry if cheap,
-    turn off floor heating if expensive, etc. '
+  description: 'When price changes, to act on it. Do a laundry if cheap, turn off
+    floor heating if expensive, etc. '
   trigger:
   - platform: state
     entity_id: sensor.tibber
@@ -88,6 +88,10 @@
     attribute: price_level
   condition: []
   action:
+  - service: notify.living_room_tv
+    data:
+      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
+        | lower }}
   - service: notify.mobile_app_galaxy_s20_plus
     data:
       title: Heads up
@@ -296,6 +300,14 @@
     data:
       entity_id: media_player.kitchen_speaker
       message: Please close the fridge
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: media_player.turn_off
+    target:
+      entity_id: media_player.kitchen_speaker
   mode: single
 - id: '1638208561467'
   alias: Ten more pushups
@@ -327,7 +339,7 @@
     target:
       entity_id: media_player.living_room_tv
     data:
-      volume_level: 0.15
+      volume_level: 0.1
   mode: single
 - id: '1638819876867'
   alias: Freezer Door Open
@@ -350,4 +362,12 @@
     data:
       entity_id: media_player.kitchen_speaker
       message: Please close the freezer
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: media_player.turn_off
+    target:
+      entity_id: media_player.kitchen_speaker
   mode: single
