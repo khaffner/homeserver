@@ -1,7 +1,7 @@
 $uri = 'https://techemadmin.no/graphql'
 $tenancyID = $env:TECHEMTENANCYID
-$email = $env:TECHEMTEMAIL
-$password = $env:TECHEMTEPASSWORD
+$email = $env:TECHEMEMAIL
+$password = $env:TECHEMPASSWORD
 
 class DistrictHeating {
     [int]$kWhLast30Days
