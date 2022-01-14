@@ -56,7 +56,7 @@ services:
     build:
       context: ./home-assistant
     env_file:
-      - secrets.env
+      - ./home-assistant/secrets.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.server.local`)"
