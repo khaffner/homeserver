@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  powermeter:
+    container_name: powermeter
+    restart: unless-stopped
+    build:
+      context: ./powermeter
+    env_file:
+      - ./powermeter/secrets.env
+    devices:
+      - '/dev/ttyAMA0:/dev/ttyAMA0'
