@@ -1,4 +1,4 @@
-FROM homeassistant/home-assistant:2022.2.6
+FROM homeassistant/home-assistant:2022.2.9
 
 # To update as i like, run
 # cd code/homeserver && git pull && docker-compose up -d --build --force-recreate --remove-orphans home-assistant
