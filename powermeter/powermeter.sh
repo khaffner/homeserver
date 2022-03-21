@@ -11,5 +11,5 @@ do
         http://192.168.1.2:8123/api/states/sensor.powermeterraw \
         -d $json
 
-    sleep 4
+    sleep 1
 done
