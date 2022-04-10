@@ -1,7 +1,7 @@
 #!/bin/bash
 while true
 do
-    # Get data from sensor
+    # Get data from sensor. Some times, the data is incomplete.
     data=$(head -n 1 /dev/ttyAMA0)
 
     # Valid readings start with a 1
