@@ -15,6 +15,10 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+recorder:
+  purge_keep_days: 90
+  commit_interval: 60
+
 homeassistant:
   currency: NOK
 
@@ -23,51 +27,10 @@ wake_on_lan:
 # https://github.com/custom-components/nordpool
 nordpool:
 
-air_quality:
-  - platform: norway_air
-
-webostv:
-  host: 192.168.1.5
-  name: Living Room TV
-  turn_on_action:
-    service: wake_on_lan.send_magic_packet
-    data:
-      mac: 64:95:6C:25:93:31
-
-wemo:
-  discovery: false
-  static:
-    - 192.168.1.7
-
-light:
-  - platform: group
-    name: Kitchen Lights
-    entities:
-      - light.color_temperature_light_5
-      - light.color_temperature_light_6
-      - light.color_temperature_light_7
-  - platform: group
-    name: Hallway Lights
-    entities:
-      - light.color_temperature_light_8
-      - light.color_temperature_light_9
-      - light.color_temperature_light_10
-  - platform: group
-    name: Guest Room Lights
-    entities:
-      - light.color_temperature_light_17
-      - light.color_temperature_light_18
-      - light.color_temperature_light_19
-  - platform: group
-    name: Corner Lamp
-    entities:
-      - light.color_temperature_light_2
-      - light.color_temperature_light_4
-
 sensor:
   - platform: miflora
     mac: "C4:7C:8D:6B:F5:92"
-    name: "Buskleif Myntestad"
+    name: "Buskhild"
   
   # https://github.com/custom-components/nordpool
   - platform: nordpool
@@ -94,41 +57,56 @@ sensor:
     command: curl -s "https://data.norges-bank.no/api/data/EXR/B.EUR.NOK.SP?lastNObservations=1&format=sdmx-json" | python3 -c 'import sys, json;print(json.load(sys.stdin)["data"]["dataSets"][0]["series"]["0:0:0:0"]["observations"]["0"][0])'
     unit_of_measurement: "NOK"
     scan_interval: 3600
+  
+  - platform: command_line
+    name: Techem data
+    command: pwsh -f /config/pwsh/Techem.ps1
+    scan_interval: 3600
+    value_template: "{{ value_json }}"
+    json_attributes:
+      - DistrictHeating
+      - HotWater
+  
+  - platform: integration
+    source: sensor.electricitytruewattnow
+    name: electricitywh
+    method: left
 
-  - platform: template
-    sensors:
-      tvvolume:
-        friendly_name: TV Volume
+template:
+  - sensor:
+      - name: "Electricity usage"
+        unit_of_measurement: "kWh"
+        state: "{{ states('sensor.electricitywh') | multiply(0.001) | round(3) }}"
+        device_class: energy
+        state_class: measurement
+      
+      - name: TV Volume
         unit_of_measurement: "%"
-        value_template: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
-      precipitationprobability:
-        friendly_name: "Precipitation probability"
+        state: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
+
+      - name: "Precipitation probability"
         unit_of_measurement: "%"
-        value_template: "{{ state_attr('weather.home','forecast')[0].precipitation_probability | round }}"
-      washing_machine_watt_rounded:
-        friendly_name: "Washing machine watt rounded"
-        unit_of_measurement: "W"
-        value_template: "{{ states('sensor.washing_machine_current_power') | round }}"
-      electricityprice:
-        friendly_name: "Electricity Price"
+        state: "{{ state_attr('weather.home','forecast')[0].precipitation_probability | round }}"
+      
+      - name: "Electricity Price"
         unit_of_measurement: "Øre"
-        value_template: "{{ states('sensor.tibber') | multiply(100) | round }}"
-      electricitypricelevel:
-        friendly_name: "Electricity Price Level"
-        value_template: "{{ state_attr('sensor.tibber','price_level') | capitalize | replace('_',' ') }}"
-      firstsubwaydeparture:
-        friendly_name: "Next subway"
-        icon_template: mdi:subway-variant
+        state: "{{ states('sensor.tibber') | multiply(100) | round }}"
+      
+      - name: "Electricity Price Level"
+        state: "{{ state_attr('sensor.tibber','price_level') | capitalize | replace('_',' ') }}"
+      
+      - name: "First subway"
+        icon: mdi:subway-variant
         unit_of_measurement: "min"
-        value_template: "{{ states('sensor.entur_okern_platform_2') }}"
-      nextsubwaydeparture:
-        friendly_name: "Second subway"
-        icon_template: mdi:subway-variant
+        state: "{{ states('sensor.entur_okern_platform_2') }}"
+      
+      - name: "Next subway"
+        icon: mdi:subway-variant
         unit_of_measurement: "min"
-        value_template: "{{ state_attr('sensor.entur_okern_platform_2','next_due_in') | replace('min','') }}"
-      electricitypriceemoji:
-        friendly_name: Electricity price emoji
-        value_template: >
+        state: "{{ state_attr('sensor.entur_okern_platform_2','next_due_in') | replace('min','') }}"
+      
+      - name: Electricity price emoji
+        state: >
           {% if state_attr('sensor.tibber','price_level') == "VERY_CHEAP" %}
             😄
           {% elif state_attr('sensor.tibber','price_level') == "CHEAP" %}
@@ -142,16 +120,55 @@ sensor:
           {% else %}
             ?
           {% endif %}
-      electricitypriceeurin10hrs:
-        friendly_name: Electricity price in EUR in 10 hours
+      
+      - name: Electricity price in EUR in 10 hours
         unit_of_measurement: "EUR"
-        value_template: >
+        state: >
           {% if now().hour < 14 %}
           {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour+10]}}
           {%- else -%}
           {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-14]}}
           {%- endif %}
-      electricitypricenokin10hrs:
-        friendly_name: Electricity price in NOK(Øre) in 10 hours
+      
+      - name: Electricity price in NOK(Øre) in 10 hours
         unit_of_measurement: "Øre"
-        value_template: "{{ (states('sensor.electricitypriceeurin10hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
+        state: "{{ (states('sensor.electricitypriceeurin10hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
+      
+      - name: "Laptop mouse battery"
+        unit_of_measurement: "%"
+        device_class: battery
+        state: >
+          {% set mousebatlist = states("sensor.t570_bat_hidpp_battery_0_charge"),
+                                states("sensor.t570_bat_hidpp_battery_1_charge") %}
+          {{ mousebatlist | max }}
+      
+      - name: District heating usage last 30 days
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state: "{{ state_attr('sensor.techem_data','DistrictHeating')['kWhLast30Days']}}"
+      
+      - name: District heating usage compared to neighbors
+        unit_of_measurement: '%'
+        state: "{{ state_attr('sensor.techem_data','DistrictHeating')['UsageComparedToNeighbors']}}"
+      
+      - name: Hot water usage last 30 days
+        unit_of_measurement: "Liters"
+        state: "{{ state_attr('sensor.techem_data','HotWater')['LitersLast30Days']}}"
+      
+      - name: Hot water usage compared to neighbors
+        unit_of_measurement: '%'
+        state: "{{ state_attr('sensor.techem_data','HotWater')['UsageComparedToNeighbors']}}"
+      
+      - name: Real watt usage now
+        unit_of_measurement: "W"
+        state: >
+          {%if states('sensor.powermeterraw')[0] == "1" %}
+          {{ states('sensor.powermeterraw').split(";")[1] | round }}
+          {% endif %}
+      
+      - name: Apparent watt usage now
+        unit_of_measurement: "W"
+        state: >
+          {%if states('sensor.powermeterraw')[0] == "1" %}
+          {{ states('sensor.powermeterraw').split(";")[2] | round }}
+          {% endif %}

@@ -29,6 +29,7 @@
       entity_id: light.color_temperature_light_11
     data:
       brightness_pct: 10
+      transition: 10
   mode: single
 - id: '1637598552629'
   alias: Sunrise
@@ -71,6 +72,10 @@
     data:
       brightness_pct: 100
       kelvin: 6500
+  - type: turn_on
+    device_id: 097cdc2b6936a53f2efb8650da82c70f
+    entity_id: light.dimmable_light_3
+    domain: light
   mode: single
 - id: '1637602345125'
   alias: Electricity price alert
@@ -243,42 +248,6 @@
       kelvin: 2700
       brightness_pct: 100
   mode: single
-- id: '1637793189303'
-  alias: Storage room light on
-  description: ''
-  trigger:
-  - type: motion
-    platform: device
-    device_id: 2457cc5bab305feb916c9abc2220d82c
-    entity_id: binary_sensor.tradfri_motion_sensor
-    domain: binary_sensor
-    id: storage_room_motion_on
-  condition: []
-  action:
-  - type: turn_on
-    device_id: ffbc3354eec456f66e0aa8bab7590189
-    entity_id: light.dimmable_light_16
-    domain: light
-    flash: long
-    brightness_pct: 100
-  mode: single
-- id: '1637793223688'
-  alias: Storage room light off
-  description: ''
-  trigger:
-  - type: no_motion
-    platform: device
-    device_id: 2457cc5bab305feb916c9abc2220d82c
-    entity_id: binary_sensor.tradfri_motion_sensor
-    domain: binary_sensor
-    id: storage_room_motion_off
-  condition: []
-  action:
-  - type: turn_off
-    device_id: ffbc3354eec456f66e0aa8bab7590189
-    entity_id: light.dimmable_light_16
-    domain: light
-  mode: single
 - id: '1638103067320'
   alias: Fridge Door Open
   description: ''
@@ -308,21 +277,6 @@
   - service: media_player.turn_off
     target:
       entity_id: media_player.kitchen_speaker
-  mode: single
-- id: '1638208561467'
-  alias: Ten more pushups
-  description: ''
-  trigger:
-  - platform: time
-    at: 04:00
-  condition: []
-  action:
-  - repeat:
-      count: '10'
-      sequence:
-      - service: counter.increment
-        target:
-          entity_id: counter.pushups_to_do
   mode: single
 - id: '1638660021716'
   alias: Reset TV volume
@@ -370,4 +324,147 @@
   - service: media_player.turn_off
     target:
       entity_id: media_player.kitchen_speaker
+  mode: single
+- id: '1639429601610'
+  alias: Good night
+  description: Routine to turn off stuff at night
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.sm_g970f_next_alarm
+    attribute: Time in Milliseconds
+    above: '1'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  - platform: numeric_state
+    entity_id: sensor.sm_g986b_next_alarm
+    attribute: Time in Milliseconds
+    above: '1'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  condition:
+  - condition: time
+    after: '23:00'
+    before: 05:00
+  action:
+  - service: script.turn_off_most_things
+  mode: single
+- id: '1641937478771'
+  alias: Keep hallway lights dimmed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.hallway_lights
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 85
+    target:
+      entity_id: light.hallway_lights
+  mode: single
+- id: '1641938129788'
+  alias: Turn on kitchen light on motion in kitchen
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.tradfri_motion_sensor_2
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.kitchen_lights
+    data:
+      transition: 3
+  mode: single
+- id: '1642070225995'
+  alias: Keep dining table lights dimmed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.dining_table_lamp
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 80
+    target:
+      entity_id: light.dining_table_lamp
+  mode: single
+- id: '1643575469299'
+  alias: Storage room light
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.tradfri_motion_sensor
+      light_target:
+        entity_id: light.dimmable_light_16
+- id: '1643576023990'
+  alias: Living room lights
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.tradfri_motion_sensor_3
+      light_target:
+        entity_id: light.dining_table_lamp
+- id: '1643576587760'
+  alias: Lights off offices 17
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:00'
+  condition: []
+  action:
+  - service: light.turn_off
+    target:
+      entity_id:
+      - light.guest_room_lights
+    data: {}
+  mode: single
+- id: '1647899713913'
+  alias: Switch Hallway Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_hallway_off
+    event_data:
+      id: on_off_switch_hallway
+      event: 2002
+  condition: []
+  action:
+  - service: script.turn_off_most_things
+    data: {}
+  mode: single
+- id: '1647899869741'
+  alias: Switch Hallway On
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    id: switch_hallway_on
+    event_data:
+      id: on_off_switch_hallway
+      event: 1002
+  condition: []
+  action:
+  - service: script.turn_on_some_things
+    data: {}
   mode: single
