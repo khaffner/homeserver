@@ -27,5 +27,5 @@ do
         echo "Invalid data: $data"
     fi
 
-    sleep 1
+    sleep 4
 done
