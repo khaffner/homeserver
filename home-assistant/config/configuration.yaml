@@ -68,18 +68,13 @@ sensor:
       - HotWater
   
   - platform: integration
-    source: sensor.electricitytruewattnow
-    name: electricitywh
-    method: left
+    source: sensor.real_watt_usage_now
+    name: Electricity kWh
+    unit_prefix: k
+    round: 2
 
 template:
-  - sensor:
-      - name: "Electricity usage"
-        unit_of_measurement: "kWh"
-        state: "{{ states('sensor.electricitywh') | multiply(0.001) | round(3) }}"
-        device_class: energy
-        state_class: measurement
-      
+  - sensor:      
       - name: TV Volume
         unit_of_measurement: "%"
         state: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
@@ -133,14 +128,6 @@ template:
       - name: Electricity price in NOK(Øre) in 10 hours
         unit_of_measurement: "Øre"
         state: "{{ (states('sensor.electricitypriceeurin10hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
-      
-      - name: "Laptop mouse battery"
-        unit_of_measurement: "%"
-        device_class: battery
-        state: >
-          {% set mousebatlist = states("sensor.t570_bat_hidpp_battery_0_charge"),
-                                states("sensor.t570_bat_hidpp_battery_1_charge") %}
-          {{ mousebatlist | max }}
       
       - name: District heating usage last 30 days
         unit_of_measurement: "kWh"

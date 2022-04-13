@@ -40,16 +40,16 @@ views:
             columns: 2
           - type: conditional
             conditions:
-              - entity: sensor.electricitypricelevel
+              - entity: sensor.electricity_price_level
                 state_not: Normal
             card:
               type: grid
               cards:
                 - type: entity
-                  entity: sensor.electricityprice
+                  entity: sensor.electricity_price
                   icon: mdi:currency-usd
                 - type: entity
-                  entity: sensor.electricitypriceemoji
+                  entity: sensor.electricity_price_emoji
                   name: Mood
                   icon: mdi:currency-usd
               columns: 2
@@ -139,13 +139,13 @@ views:
           - type: entity-filter
             show_empty: false
             entities:
-              - sensor.electricitytruewattnow
+              - sensor.real_watt_usage_now
             state_filter:
               - operator: '>'
                 value: 1000
             card:
               type: gauge
-              entity: sensor.electricitytruewattnow
+              entity: sensor.real_watt_usage_now
               min: 0
               max: 10000
               name: Watt
@@ -446,11 +446,11 @@ views:
             entity: weather.home
           - type: conditional
             conditions:
-              - entity: sensor.precipitationprobability
+              - entity: sensor.precipitation_probability
                 state_not: '0'
             card:
               type: sensor
-              entity: sensor.precipitationprobability
+              entity: sensor.precipitation_probability
               icon: mdi:weather-rainy
               name: Chance of rain
               graph: line
@@ -467,12 +467,11 @@ views:
               icon: mdi:wall-sconce-flat
           - type: glance
             entities:
-              - entity: sensor.firstsubwaydeparture
+              - entity: sensor.first_subway
                 name: First subway
-              - entity: sensor.nextsubwaydeparture
+              - entity: sensor.next_subway
                 name: Next subway
-              - entity: sensor.entur_okern_aldershjem
-                name: Økern Aldershjem
+              - entity: sensor.oslo_bysykkel_cf4a1731ae3fc4ff85d0531db84cfc08
             state_color: false
             show_name: true
             title: Public Transport
@@ -598,69 +597,69 @@ views:
         columns: 2
         square: false
         cards:
-          - type: sensor
-            entity: sensor.electricityprice
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.electricity_price
             name: Price
             icon: mdi:currency-usd
             detail: 2
-            graph: line
           - type: entity
-            entity: sensor.electricitypriceemoji
+            entity: sensor.electricity_price_emoji
             icon: mdi:currency-usd
             state_color: false
             name: Mood
-      - type: sensor
-        entity: sensor.electricitypricenokin10hrs
+      - hours_to_show: 20
         graph: line
+        type: sensor
+        entity: sensor.electricity_price_in_nok_ore_in_10_hours
         detail: 2
         icon: mdi:currency-usd
         name: Electricity price in 10 hours
-        hours_to_show: 20
       - type: grid
         cards:
-          - type: sensor
-            entity: sensor.districtheatinglast30days
+          - hours_to_show: 168
             graph: line
+            type: sensor
+            entity: sensor.district_heating_usage_last_30_days
             detail: 2
             icon: mdi:radiator
             name: Heating
-            hours_to_show: 168
-          - type: sensor
-            entity: sensor.districtheatingusagecomparedtoneighbors
+          - hours_to_show: 168
             graph: line
+            type: sensor
+            entity: sensor.district_heating_usage_compared_to_neighbors
             icon: mdi:radiator
             name: Compared to neigbors
             detail: 2
-            hours_to_show: 168
-          - type: sensor
-            entity: sensor.hotwaterusagelast30days
+          - hours_to_show: 168
             graph: line
+            type: sensor
+            entity: sensor.hot_water_usage_last_30_days
             detail: 2
             icon: mdi:water-boiler
             name: Hot water
-            hours_to_show: 168
-          - type: sensor
-            entity: sensor.hotwaterusagecomparedtoneighbors
+          - hours_to_show: 168
             graph: line
+            type: sensor
+            entity: sensor.hot_water_usage_compared_to_neighbors
             icon: mdi:water-boiler
             name: Compared to neigbors
             detail: 2
-            hours_to_show: 168
         columns: 2
         square: false
       - type: vertical-stack
         cards:
-          - type: sensor
-            entity: sensor.electricitytruewattnow
+          - hours_to_show: 24
             graph: line
+            type: sensor
+            entity: sensor.real_watt_usage_now
             icon: mdi:lightning-bolt
-            name: Watt
             detail: 2
           - type: gauge
-            entity: sensor.electricitytruewattnow
+            entity: sensor.real_watt_usage_now
             min: 0
             max: 10000
-            name: Watt
             severity:
               green: 0
               yellow: 4000
@@ -794,12 +793,3 @@ views:
                     yellow: 25
                     red: 0
                   name: Battery External
-                - type: gauge
-                  entity: sensor.laptopmousebattery
-                  min: 0
-                  max: 100
-                  name: Mouse
-                  severity:
-                    green: 50
-                    yellow: 25
-                    red: 0
