@@ -12,7 +12,9 @@ do
         json=$(jq -c --null-input --arg data "$data" '{"state":$data}')
 
         # Echo the json for logging purposes
+        echo --------------------------------------
         echo $json
+        echo --------------------------------------
 
         # Send the data to Home Assistant
         curl -X POST \
