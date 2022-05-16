@@ -8,7 +8,7 @@ services:
     volumes:
         - '/home/kevin/Dockervolumes/uptime-kuma/:/app/data'
     container_name: uptime-kuma
-    image: 'louislam/uptime-kuma:1'
+    image: louislam/uptime-kuma:1-debian
 ###############################################################
   portainer-ce:
     ports:
@@ -19,7 +19,7 @@ services:
     volumes:
         - '/var/run/docker.sock:/var/run/docker.sock'
         - '/home/kevin/Dockervolumes/portainer:/data'
-    image: 'portainer/portainer-ce:2.9.2'
+    image: portainer/portainer-ce:latest
 ###############################################################
   home-assistant:
     container_name: home-assistant
@@ -44,7 +44,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     pid: host
-    image: 'nicolargo/glances:latest'
+    image: nicolargo/glances:latest
 ###############################################################
   deconz:
     container_name: deconz
@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
 ###############################################################
   heimdall:
-    image: lscr.io/linuxserver/heimdall
+    image: linuxserver/heimdall:latest
     container_name: heimdall
     environment:
       - PUID=1000

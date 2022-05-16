@@ -3,9 +3,9 @@
 This repo acts mostly as documentation, backup and examples for myself. Changes here do not automatically deploy.
 
 ## Notes:
-To upgrade and restart home assistant, run
+To upgrade and restart everything, run
 ```console
-cd code/homeserver && git pull && docker-compose up -d --build --force-recreate --remove-orphans home-assistant
+cd code/homeserver && git pull && docker-compose pull &&  docker-compose up -d --build --force-recreate --remove-orphans && cd ~
 ```
 
 To start power meter on the pi zero, run:
