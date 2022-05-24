@@ -44,7 +44,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     pid: host
-    image: nicolargo/glances:latest
+    image: nicolargo/glances:3.2.4.2 # https://github.com/home-assistant/core/issues/70373. Switch back to latest when issue is resolved
 ###############################################################
   deconz:
     container_name: deconz
