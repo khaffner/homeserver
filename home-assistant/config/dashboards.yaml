@@ -290,28 +290,6 @@ views:
         columns: 2
         square: false
       - type: grid
-        columns: 2
-        cards:
-          - type: gauge
-            entity: sensor.temperature_8
-            min: 15
-            max: 30
-            severity:
-              green: 20
-              yellow: 24
-              red: 27
-            name: ' '
-          - type: gauge
-            entity: sensor.humidity_9
-            min: 0
-            max: 100
-            severity:
-              green: 20
-              yellow: 50
-              red: 60
-            name: ' '
-        square: false
-      - type: grid
         cards:
           - type: gauge
             entity: sensor.buskhild_moisture
@@ -609,13 +587,6 @@ views:
             icon: mdi:currency-usd
             state_color: false
             name: Mood
-      - hours_to_show: 20
-        graph: line
-        type: sensor
-        entity: sensor.electricity_price_in_nok_ore_in_10_hours
-        detail: 2
-        icon: mdi:currency-usd
-        name: Electricity price in 10 hours
       - type: grid
         cards:
           - hours_to_show: 168
@@ -650,7 +621,7 @@ views:
         square: false
       - type: vertical-stack
         cards:
-          - hours_to_show: 24
+          - hours_to_show: 1
             graph: line
             type: sensor
             entity: sensor.real_watt_usage_now

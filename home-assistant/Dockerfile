@@ -1,4 +1,4 @@
-FROM homeassistant/home-assistant:2022.5.5
+FROM homeassistant/home-assistant:2022.6.2
 
 # See readme for usage
 

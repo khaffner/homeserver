@@ -24,9 +24,6 @@ homeassistant:
 
 wake_on_lan:
 
-# https://github.com/custom-components/nordpool
-nordpool:
-
 sensor:
   - platform: miflora
     mac: "C4:7C:8D:6B:F5:92"
@@ -51,12 +48,6 @@ sensor:
     line_whitelist:
       - 'RUT:Line:5'
       - 'RUT:Line:60'
-    
-  - platform: command_line
-    name: EUR/NOK conversion rate
-    command: curl -s "https://data.norges-bank.no/api/data/EXR/B.EUR.NOK.SP?lastNObservations=1&format=sdmx-json" | python3 -c 'import sys, json;print(json.load(sys.stdin)["data"]["dataSets"][0]["series"]["0:0:0:0"]["observations"]["0"][0])'
-    unit_of_measurement: "NOK"
-    scan_interval: 3600
   
   - platform: command_line
     name: Techem data
@@ -115,19 +106,6 @@ template:
           {% else %}
             ?
           {% endif %}
-      
-      - name: Electricity price in EUR in 10 hours
-        unit_of_measurement: "EUR"
-        state: >
-          {% if now().hour < 14 %}
-          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','today')[now().hour+10]}}
-          {%- else -%}
-          {{ state_attr('sensor.nordpool_kwh_oslo_eur_3_10_025','tomorrow')[now().hour-14]}}
-          {%- endif %}
-      
-      - name: Electricity price in NOK(Øre) in 10 hours
-        unit_of_measurement: "Øre"
-        state: "{{ (states('sensor.electricitypriceeurin10hrs') | float * states('sensor.eur_nok_conversion_rate') | float * 100) | round }}" # Times 100 to get Øre.
       
       - name: District heating usage last 30 days
         unit_of_measurement: "kWh"
