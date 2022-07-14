@@ -28,10 +28,7 @@ services:
       - '/etc/localtime:/etc/localtime:ro'
     network_mode: host
     restart: unless-stopped
-    build:
-      context: ./home-assistant
-    env_file:
-      - ./home-assistant/secrets.env
+    image: homeassistant/home-assistant:2022.7
 ###############################################################
   glances:
     container_name: glances
