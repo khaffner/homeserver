@@ -89,23 +89,17 @@
       hours: 0
       minutes: 0
       seconds: 10
-      milliseconds: 0
     attribute: price_level
   condition: []
   action:
   - service: notify.living_room_tv
     data:
-      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
+      message: Electricity price is now {{ states.sensor.electricity_price_level.state
         | lower }}
-  - service: notify.mobile_app_galaxy_s20_plus
+  - service: notify.mobile_app_s22_ultra
     data:
       title: Heads up
-      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
-        | lower }}
-  - service: notify.mobile_app_sm_g970f
-    data:
-      title: Heads up
-      message: Electricity price is now {{ states.sensor.electricitypricelevel.state
+      message: Electricity price is now {{ states.sensor.electricity_price_level.state
         | lower }}
   mode: single
 - id: '1637607890866'

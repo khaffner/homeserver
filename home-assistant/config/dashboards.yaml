@@ -289,23 +289,6 @@ views:
             icon: mdi:ceiling-light-multiple
         columns: 2
         square: false
-      - type: grid
-        cards:
-          - type: gauge
-            entity: sensor.buskhild_moisture
-            max: 40
-            name: Moisture
-            min: 0
-            severity:
-              green: 10
-              yellow: 5
-              red: 0
-          - type: gauge
-            entity: sensor.buskhild_light_intensity
-            min: 0
-            max: 5000
-            name: Light
-        columns: 2
   - title: Kitchen
     path: kitchen
     icon: mdi:pot-steam
@@ -587,38 +570,6 @@ views:
             icon: mdi:currency-usd
             state_color: false
             name: Mood
-      - type: grid
-        cards:
-          - hours_to_show: 168
-            graph: line
-            type: sensor
-            entity: sensor.district_heating_usage_last_30_days
-            detail: 2
-            icon: mdi:radiator
-            name: Heating
-          - hours_to_show: 168
-            graph: line
-            type: sensor
-            entity: sensor.district_heating_usage_compared_to_neighbors
-            icon: mdi:radiator
-            name: Compared to neigbors
-            detail: 2
-          - hours_to_show: 168
-            graph: line
-            type: sensor
-            entity: sensor.hot_water_usage_last_30_days
-            detail: 2
-            icon: mdi:water-boiler
-            name: Hot water
-          - hours_to_show: 168
-            graph: line
-            type: sensor
-            entity: sensor.hot_water_usage_compared_to_neighbors
-            icon: mdi:water-boiler
-            name: Compared to neigbors
-            detail: 2
-        columns: 2
-        square: false
       - type: vertical-stack
         cards:
           - hours_to_show: 1
@@ -764,3 +715,35 @@ views:
                     yellow: 25
                     red: 0
                   name: Battery External
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: sensor.nasdisk_55cd2e144d138fbf
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_5000c5009d240e38
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_fa69fe43ac3411e68261f44d30631bd6
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_048d1e615803f1d9efe893de74500e6d
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_40e63529103f167d4b4bc85b3caf607b
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_40e63529103f167d4b4bc85b3caf607b
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_f125277fbc04efc332c438784c4a5cfa
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_adeeee9657d595d9c2528bc46e852a0b
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_94cecda3f527c7417f8d100e38fd07b6
+                icon: mdi:harddisk
+              - type: entity
+                entity: sensor.nasdisk_56961b62ac8d11e68262f44d30631bd6
+                icon: mdi:harddisk

@@ -16,7 +16,7 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 recorder:
-  purge_keep_days: 90
+  purge_keep_days: 60
   commit_interval: 60
 
 homeassistant:
@@ -25,17 +25,6 @@ homeassistant:
 wake_on_lan:
 
 sensor:
-  - platform: miflora
-    mac: "C4:7C:8D:6B:F5:92"
-    name: "Buskhild"
-  
-  # https://github.com/custom-components/nordpool
-  - platform: nordpool
-    VAT: true
-    currency: "EUR"
-    region: Oslo
-    precision: 3
-
   - platform: citybikes
     radius: 1000
 
@@ -48,15 +37,6 @@ sensor:
     line_whitelist:
       - 'RUT:Line:5'
       - 'RUT:Line:60'
-  
-  - platform: command_line
-    name: Techem data
-    command: pwsh -f /config/pwsh/Techem.ps1
-    scan_interval: 3600
-    value_template: "{{ value_json }}"
-    json_attributes:
-      - DistrictHeating
-      - HotWater
   
   - platform: integration
     source: sensor.real_watt_usage_now
@@ -106,23 +86,6 @@ template:
           {% else %}
             ?
           {% endif %}
-      
-      - name: District heating usage last 30 days
-        unit_of_measurement: "kWh"
-        device_class: energy
-        state: "{{ state_attr('sensor.techem_data','DistrictHeating')['kWhLast30Days']}}"
-      
-      - name: District heating usage compared to neighbors
-        unit_of_measurement: '%'
-        state: "{{ state_attr('sensor.techem_data','DistrictHeating')['UsageComparedToNeighbors']}}"
-      
-      - name: Hot water usage last 30 days
-        unit_of_measurement: "Liters"
-        state: "{{ state_attr('sensor.techem_data','HotWater')['LitersLast30Days']}}"
-      
-      - name: Hot water usage compared to neighbors
-        unit_of_measurement: '%'
-        state: "{{ state_attr('sensor.techem_data','HotWater')['UsageComparedToNeighbors']}}"
       
       - name: Real watt usage now
         unit_of_measurement: "W"
