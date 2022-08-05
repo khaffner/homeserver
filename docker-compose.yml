@@ -26,6 +26,7 @@ services:
     volumes:
       - '/home/kevin/Dockervolumes/home-assistant/:/config'
       - '/etc/localtime:/etc/localtime:ro'
+      - '/run/dbus:/run/dbus:ro'
     network_mode: host
     restart: unless-stopped
     image: homeassistant/home-assistant:2022.8
