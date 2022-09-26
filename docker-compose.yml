@@ -23,6 +23,7 @@ services:
 ###############################################################
   home-assistant:
     container_name: home-assistant
+    command: /bin/bash -c "bluetoothctl power on && hass -c /config/" #https://www.homeautomationguy.io/home-assistant-tips/failed-to-start-bluetooth-org-bluez-error-notready-resource-not-ready/
     volumes:
       - '/home/kevin/Dockervolumes/home-assistant/:/config'
       - '/etc/localtime:/etc/localtime:ro'
