@@ -30,7 +30,7 @@ services:
       - '/run/dbus:/run/dbus:ro'
     network_mode: host
     restart: unless-stopped
-    image: homeassistant/home-assistant:2022.9.7
+    image: homeassistant/home-assistant:2022.10.1
 ###############################################################
   glances:
     container_name: glances
