@@ -1,15 +1,6 @@
 version: '3.8'
 services:
 ###############################################################
-  uptime-kuma:
-    restart: unless-stopped
-    ports:
-        - '3001:3001'
-    volumes:
-        - '/home/kevin/Dockervolumes/uptime-kuma/:/app/data'
-    container_name: uptime-kuma
-    image: louislam/uptime-kuma:1-debian
-###############################################################
   portainer-ce:
     ports:
         - '8000:8000'
@@ -23,7 +14,6 @@ services:
 ###############################################################
   home-assistant:
     container_name: home-assistant
-    #command: /bin/bash -c "bluetoothctl power on && hass -c /config/" #https://www.homeautomationguy.io/home-assistant-tips/failed-to-start-bluetooth-org-bluez-error-notready-resource-not-ready/
     volumes:
       - '/home/kevin/Dockervolumes/home-assistant/:/config'
       - '/etc/localtime:/etc/localtime:ro'
@@ -61,18 +51,3 @@ services:
       - 8081:8081
       - 4430:4430
     restart: unless-stopped
-###############################################################
-  heimdall:
-    image: linuxserver/heimdall:latest
-    container_name: heimdall
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Oslo
-    volumes:
-      - /home/kevin/Dockervolumes/heimdall:/config
-    ports:
-      - 80:80
-      - 443:443
-    restart: unless-stopped
-    
