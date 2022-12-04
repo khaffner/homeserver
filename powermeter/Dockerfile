@@ -1,6 +1,6 @@
 FROM arm32v5/python:3.10-slim-buster
 
-RUN apt-get update && apt-get install python3-serial -y
+RUN pip3 install pyserial
 
 ADD powermeter.py /app/powermeter.py
 WORKDIR /app/
