@@ -3,7 +3,6 @@
  # http://lechacal.com/wiki/index.php/Raspberrypi_Current_and_Temperature_Sensor_Adaptor#Using_Python_basic_script
 
 import serial
-import re
 import json
 import os
 from requests import post
@@ -21,7 +20,7 @@ try:
     while 1:
         response = str(ser.readline())
         print(response)
-        watts = re.search('(?<=1 )\d{2,}',response).group(1)
+        watts = response.split(' ')[1]
 
         print(watts)
 
