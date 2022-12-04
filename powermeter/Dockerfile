@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bullseye
+FROM python:3.11-bullseye
 
 RUN apt-get update && apt-get install python3-serial -y
 
