@@ -19,10 +19,10 @@ headers = {
 
 try:
     while 1:
-        response = ser.readline()
+        response = str(ser.readline())
+        print(response)
         watts = re.search('(?<=1 )\d{2,}',response).group(1)
 
-        print(response)
         print(watts)
 
         data = {
