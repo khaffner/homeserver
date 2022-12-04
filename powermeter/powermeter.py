@@ -5,6 +5,7 @@
 import serial
 import json
 import os
+import time
 from requests import post
 
 ser = serial.Serial('/dev/ttyAMA0', 38400)
@@ -20,7 +21,10 @@ try:
     while 1:
         response = str(ser.readline())
         print(response)
-        watts = response.split(' ')[1]
+        # response might look like this:
+        # b'4 0.245 11 491.34 572.0258 2.05 9.94 0.0260.57 011 489.412.14 0.60.96 0.11 501.11 580.2619.15 0..000\r\n'
+        # The interesting part is right after "11 ", and I don't need decimals.
+        watts = response.split('11 ')[1].split('.')[0]
 
         print(watts)
 
@@ -29,5 +33,7 @@ try:
         }
 
         response = post(url, headers=headers, data=json.dumps(data))
+
+        time.sleep(1)
 except KeyboardInterrupt:
     ser.close()
