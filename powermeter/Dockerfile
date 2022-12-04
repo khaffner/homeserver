@@ -1,4 +1,4 @@
-FROM arm32v5/python:3.11-slim-bullseye
+FROM arm32v5/python:3.10-slim-buster
 
 RUN apt-get update && apt-get install python3-serial -y
 
