@@ -4,6 +4,8 @@ do
     # Get data from sensor. Some times, the data is incomplete.
     data=$(head -n 1 /dev/ttyAMA0)
 
+    echo $data
+
     # Valid readings start with a 1
     if [[ $data == 1* ]] ;
     then
@@ -11,20 +13,14 @@ do
         data="${data// /;}"
         json=$(jq -c --null-input --arg data "$data" '{"state":$data}')
 
-        # Echo the json for logging purposes
-        echo --------------------------------------
-        echo $json
-        echo --------------------------------------
-
         # Send the data to Home Assistant
         curl -X POST \
             -H "Authorization: Bearer ${HATOKEN}" \
             -H "Content-Type: application/json" \
             http://192.168.1.2:8123/api/states/sensor.powermeterraw \
-            -d $json
+            -d $json > /dev/null
     else
-        # If reading does not start with 1, only output it to host.
-        echo "Invalid data: $data"
+
     fi
 
     sleep 4
