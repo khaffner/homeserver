@@ -15,7 +15,9 @@ do
         -H "Authorization: Bearer ${HATOKEN}" \
         -H "Content-Type: application/json" \
         http://192.168.1.2:8123/api/states/sensor.powermeterraw \
-        -d $json > /dev/null
+        -d $json \
+        -s \
+        -o /dev/null
 
     sleep 4
 done
