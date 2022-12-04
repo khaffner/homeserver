@@ -1,9 +1,8 @@
-FROM arm32v5/debian:10-slim
+FROM python:3.8-slim-bullseye
 
-RUN apt-get update && apt-get install jq curl -y
+RUN apt-get update && apt-get install python3-serial -y
 
-ADD powermeter.sh /app/powermeter.sh
-RUN chmod +x /app/powermeter.sh
+ADD powermeter.py /app/powermeter.py
 WORKDIR /app/
 
-ENTRYPOINT [ "/bin/bash", "powermeter.sh" ]
+ENTRYPOINT [ "python", "powermeter.py" ]
