@@ -38,6 +38,6 @@ try:
         else: 
             print(f"Invalid response: {response}")
 
-        time.sleep(4)
+        time.sleep(1)
 except KeyboardInterrupt:
     ser.close()
