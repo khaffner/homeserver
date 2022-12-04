@@ -21,6 +21,10 @@ try:
     while 1:
         response = str(ser.readline())
 
+        print('----------------------------------------')
+        print(response)
+        print('----------------------------------------')
+
         # Valid readings seem to start with b
         if response.startswith('b'):
             # response might look like this:
