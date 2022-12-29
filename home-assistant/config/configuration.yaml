@@ -19,9 +19,6 @@ recorder:
   purge_keep_days: 60
   commit_interval: 60
 
-homeassistant:
-  currency: NOK
-
 wake_on_lan:
 
 sensor:
