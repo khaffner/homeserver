@@ -50,13 +50,13 @@ views:
           - type: entity-filter
             show_empty: false
             entities:
-              - sensor.watts
+              - sensor.apartment_energy_usage
             state_filter:
               - operator: '>'
                 value: 1000
             card:
               type: gauge
-              entity: sensor.watts
+              entity: sensor.apartment_energy_usage
               min: 0
               max: 10000
               name: Watt
@@ -494,7 +494,7 @@ views:
             type: sensor
             icon: mdi:lightning-bolt
             detail: 2
-            entity: sensor.watts
+            entity: sensor.apartment_energy_usage
           - type: gauge
             min: 0
             max: 10000
@@ -503,7 +503,7 @@ views:
               yellow: 4000
               red: 7000
             needle: true
-            entity: sensor.watts
+            entity: sensor.apartment_energy_usage
   - title: Infrastructure
     path: infrastructure
     icon: mdi:server

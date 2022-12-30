@@ -36,10 +36,19 @@ sensor:
       - 'RUT:Line:60'
   
   - platform: integration
-    source: sensor.real_watt_usage_now
+    source: sensor.apartment_energy_usage
     name: Electricity kWh
     unit_prefix: k
     round: 2
+
+mqtt:
+  sensor:
+    - name: "Apartment Energy Usage"
+      # Consider apparent power, which might be named Realpower2 due to hardware outputting version 2 of http://lechacal.com/wiki/index.php?title=RPICT3V1#Default_Data_Output
+      # and https://github.com/ned-kelly/docker-lechacal-homeassistant seeming to parse as if it were version 1.
+      state_topic: "apartment_power/sensor/RPICT3V1_Realpower1"
+      unit_of_measurement: "Watt"
+      value_template: "{{ value | int }}"
 
 template:
   - sensor:      
