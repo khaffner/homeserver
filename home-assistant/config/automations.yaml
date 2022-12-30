@@ -1,5 +1,5 @@
 - id: '1637497305401'
-  alias: Sunset
+  alias: Sunset turn on some lights
   description: ''
   trigger:
   - platform: sun
@@ -64,7 +64,7 @@
     target:
       entity_id: media_player.kitchen_speaker
     data:
-      media_content_id: http://lyd.nrk.no/nrk_radio_p3_mp3_h
+      media_content_id: http://lyd.nrk.no/nrk_radio_klassisk_mp3_h
       media_content_type: channel
   - service: light.turn_on
     target:
@@ -72,10 +72,11 @@
     data:
       brightness_pct: 100
       kelvin: 6500
-  - type: turn_on
-    device_id: 097cdc2b6936a53f2efb8650da82c70f
-    entity_id: light.dimmable_light_3
-    domain: light
+  - service: light.turn_on
+    data:
+      transition: 5
+    target:
+      entity_id: light.dining_table_lamp
   mode: single
 - id: '1637602345125'
   alias: Electricity price alert
@@ -319,33 +320,6 @@
     target:
       entity_id: media_player.kitchen_speaker
   mode: single
-- id: '1639429601610'
-  alias: Good night
-  description: Routine to turn off stuff at night
-  trigger:
-  - platform: numeric_state
-    entity_id: sensor.sm_g970f_next_alarm
-    attribute: Time in Milliseconds
-    above: '1'
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 5
-  - platform: numeric_state
-    entity_id: sensor.sm_g986b_next_alarm
-    attribute: Time in Milliseconds
-    above: '1'
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 5
-  condition:
-  - condition: time
-    after: '23:00'
-    before: 05:00
-  action:
-  - service: script.turn_off_most_things
-  mode: single
 - id: '1641937478771'
   alias: Keep hallway lights dimmed
   description: ''
@@ -409,15 +383,6 @@
       motion_entity: binary_sensor.tradfri_motion_sensor
       light_target:
         entity_id: light.dimmable_light_16
-- id: '1643576023990'
-  alias: Living room lights
-  description: ''
-  use_blueprint:
-    path: homeassistant/motion_light.yaml
-    input:
-      motion_entity: binary_sensor.tradfri_motion_sensor_3
-      light_target:
-        entity_id: light.dining_table_lamp
 - id: '1643576587760'
   alias: Lights off offices 17
   description: ''
@@ -461,4 +426,48 @@
   action:
   - service: script.turn_on_some_things
     data: {}
+  mode: single
+- id: '1670063956996'
+  alias: Sunset turn on Winter lights
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.on_off_plug_in_unit_12
+  mode: single
+- id: '1670064004871'
+  alias: Sunrise turn off winter lights
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.on_off_plug_in_unit_12
+  mode: single
+- id: '1670843922251'
+  alias: Hit table, turn on lights
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.vibration_49
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.dining_table_lamp
   mode: single

@@ -16,7 +16,7 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 recorder:
-  purge_keep_days: 60
+  purge_keep_days: 30
   commit_interval: 60
 
 wake_on_lan:
@@ -84,16 +84,16 @@ template:
             ?
           {% endif %}
       
-      - name: Real watt usage now
-        unit_of_measurement: "W"
+      - name: Low batteries
+        icon: mdi:battery-10
         state: >
-          {%if states('sensor.powermeterraw')[0] == "1" %}
-          {{ states('sensor.powermeterraw').split(";")[1] | round }}
-          {% endif %}
-      
-      - name: Apparent watt usage now
-        unit_of_measurement: "W"
-        state: >
-          {%if states('sensor.powermeterraw')[0] == "1" %}
-          {{ states('sensor.powermeterraw').split(";")[2] | round }}
+          {% set ns = namespace(below=[]) %}
+          {% for s in states.sensor 
+            if s.entity_id.endswith('battery_level') and s.state != 'unavailable' and s.state != 'unknown' and s.state|int < 3 %}
+          {% set ns.below = ns.below + [s.entity_id] %}
+          {% endfor %}
+          {% if ns.below | count ==  0  %}
+            none
+          {% else %}
+            {{ ns.below | join('\n') }}{% set ns = namespace(below=[]) %}
           {% endif %}
