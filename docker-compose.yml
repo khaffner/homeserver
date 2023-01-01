@@ -42,6 +42,7 @@ services:
       - TZ=Europe/Oslo
       - DECONZ_WEB_PORT=8081
       - DECONZ_WS_PORT=4430
+      - DECONZ_VNC_MODE=1
     volumes:
       - /home/kevin/Dockervolumes/deconz/:/opt/deCONZ
     devices:
