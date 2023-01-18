@@ -19,7 +19,7 @@ services:
       - '/etc/localtime:/etc/localtime:ro'
     network_mode: host
     restart: unless-stopped
-    image: homeassistant/home-assistant:2023.1.4
+    image: homeassistant/home-assistant:2023.1.5
   ###############################################################
   glances:
     container_name: glances
@@ -63,7 +63,7 @@ services:
     image: louislam/uptime-kuma:1-debian
   #################################################################
   mosquitto:
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:2
     container_name: mosquitto
     volumes:
       - '/home/kevin/Dockervolumes/mosquitto:/mosquitto'
