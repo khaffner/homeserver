@@ -21,9 +21,23 @@ recorder:
 
 wake_on_lan:
 
+feedreader:
+  urls:
+    - https://www.nrk.no/toppsaker.rss
+  scan_interval:
+    minutes: 15
+  max_entries: 5
+
 sensor:
   - platform: citybikes
     radius: 1000
+
+  - platform: bitcoin
+    display_options:
+      - exchangerate
+
+  - platform: nordpool
+    region: "Oslo"
 
   - platform: entur_public_transport
     show_on_map: true
@@ -36,22 +50,52 @@ sensor:
       - 'RUT:Line:60'
   
   - platform: integration
-    source: sensor.apartment_energy_usage
+    source: sensor.apartment_energy_usage_triggered
     name: Electricity kWh
     unit_prefix: k
     round: 2
+  
+  - platform: statistics
+    name: "Apartment Energy use average last 5 seconds"
+    entity_id: sensor.apartment_energy_usage
+    state_characteristic: average_linear
+    precision: 0
+    max_age:
+      seconds: 10
+
+image_processing:
+  - platform: doods
+    scan_interval: 3
+    url: "http://localhost:8080"
+    detector: default
+    source:
+      - entity_id: camera.192_168_1_190
+        name: Tablet front camera
+    labels:
+      - name: person
+        confidence: 50
 
 mqtt:
   sensor:
     - name: "Apartment Energy Usage"
-      # Consider apparent power, which might be named Realpower2 due to hardware outputting version 2 of http://lechacal.com/wiki/index.php?title=RPICT3V1#Default_Data_Output
-      # and https://github.com/ned-kelly/docker-lechacal-homeassistant seeming to parse as if it were version 1.
+      # Consider apparent power, which might be named Realpower2
       state_topic: "apartment_power/sensor/RPICT3V1_Realpower1"
-      unit_of_measurement: "Watt"
+      unit_of_measurement: "W"
+      device_class: power
       value_template: "{{ value | int }}"
 
 template:
-  - sensor:      
+  - trigger:
+      - platform: time_pattern
+        seconds: "/5" # Every 5 seconds
+    sensor:
+      - name: "Apartment Energy Usage Triggered"
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.apartment_energy_usage') }}"
+
+      
+  - sensor:
       - name: TV Volume
         unit_of_measurement: "%"
         state: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
@@ -92,13 +136,22 @@ template:
           {% else %}
             ?
           {% endif %}
+
+      - name: Electricity price in 12 hours
+        unit_of_measurement: NOK
+        state: >
+          {% if now().hour <= 11  %}
+          {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today'))[now().hour + 12] }}
+          {% else %}
+          {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','tomorrow'))[now().hour - 12] }}
+          {% endif %}
       
       - name: Low batteries
         icon: mdi:battery-10
         state: >
           {% set ns = namespace(below=[]) %}
           {% for s in states.sensor 
-            if s.entity_id.endswith('battery_level') and s.state != 'unavailable' and s.state != 'unknown' and s.state|int < 3 %}
+            if s.entity_id.endswith('battery_level') and s.state != 'unavailable' and s.state != 'unknown' and s.state|int < 5 %}
           {% set ns.below = ns.below + [s.entity_id] %}
           {% endfor %}
           {% if ns.below | count ==  0  %}

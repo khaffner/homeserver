@@ -1,124 +1,119 @@
 title: Økern Pandarama
 views:
-  - title: Overview
+  - theme: Backend-selected
+    title: Overview
     path: overview
-    icon: mdi:exclamation
-    type: panel
+    icon: mdi:exclamation-thick
     badges: []
     cards:
-      - type: vertical-stack
-        cards:
-          - show_current: true
-            show_forecast: true
-            type: weather-forecast
-            entity: weather.home
-            secondary_info_attribute: wind_speed
-          - type: conditional
-            conditions:
-              - entity: sensor.electricity_price_level
-                state_not: Normal
-            card:
-              type: grid
-              cards:
-                - type: entity
-                  entity: sensor.electricity_price
-                  icon: mdi:currency-usd
-                - type: entity
-                  entity: sensor.electricity_price_emoji
-                  name: Mood
-                  icon: mdi:currency-usd
-              columns: 2
-              square: false
-          - type: entity-filter
-            show_empty: false
-            entities:
-              - sensor.flower_care_moisture
-            state_filter:
-              - operator: <
-                value: 1
-            card:
-              type: button
-              tap_action:
-                action: none
-              entity: sensor.flower_care_moisture
-              show_state: true
-              icon: mdi:sprout
-              name: 💧 Buskhild is thirsty! 💧
-              show_name: true
-              hold_action:
-                action: none
-          - type: entity-filter
-            show_empty: false
-            entities:
-              - sensor.apartment_energy_usage
-            state_filter:
-              - operator: '>'
-                value: 1000
-            card:
-              type: gauge
-              entity: sensor.apartment_energy_usage
-              min: 0
-              max: 10000
-              name: Watt
-              severity:
-                green: 0
-                yellow: 4000
-                red: 7000
-              needle: true
-          - square: false
-            columns: 2
-            type: grid
-            cards:
-              - type: conditional
-                conditions:
-                  - entity: media_player.all_speakers
-                    state_not: 'off'
-                card:
-                  type: media-control
-                  entity: media_player.all_speakers
-              - type: conditional
-                conditions:
-                  - entity: media_player.kitchen_speaker
-                    state_not: 'off'
-                card:
-                  type: media-control
-                  entity: media_player.kitchen_speaker
-              - type: conditional
-                conditions:
-                  - entity: media_player.cc_living_room_tv
-                    state_not: 'off'
-                card:
-                  type: media-control
-                  entity: media_player.cc_living_room_tv
-              - type: glance
-                entities:
-                  - entity: sensor.first_subway
-                    name: First subway
-                  - entity: sensor.next_subway
-                    name: Next subway
-                  - entity: sensor.oslo_bysykkel_cf4a1731ae3fc4ff85d0531db84cfc08
-                  - entity: sensor.entur_okern_aldershjem
-                    name: Økern Aldershjem
-                state_color: false
-                show_name: true
-              - show_name: true
-                show_icon: true
-                show_state: true
-                type: glance
-                entities:
-                  - entity: sensor.sm_g970f_battery_level
-                    name: Heidi
-                  - entity: sensor.s22_ultra_battery_level
-                    name: Kevin
-                state_color: false
-          - type: conditional
-            conditions:
-              - entity: sensor.low_batteries
-                state_not: none
-            card:
-              type: entities
-              entities:
-                - entity: sensor.low_batteries
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.soil_dry
+            state: 'on'
+        card:
+          type: markdown
+          content: '### Water the plants'
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.posten_binary_sensor
+            state: 'on'
+        card:
+          type: markdown
+          content: '### Check mailbox today'
+      - type: conditional
+        conditions:
+          - entity: media_player.living_room_tv
+            state: 'on'
+        card:
+          type: media-control
+          entity: media_player.living_room_tv
+      - type: conditional
+        conditions:
+          - entity: media_player.kitchen_speaker
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.kitchen_speaker
+      - type: conditional
+        conditions:
+          - entity: media_player.big_bathroom_speaker
+            state: 'on'
+        card:
+          type: media-control
+          entity: media_player.big_bathroom_speaker
+      - type: conditional
+        conditions:
+          - entity: media_player.small_bathroom_speaker
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.small_bathroom_speaker
+      - type: glance
+        entities:
+          - entity: sensor.sm_g970f_battery_level
+            name: S10e
+          - entity: sensor.s22_ultra_battery_level
+            name: S22 Ultra
+          - entity: person.heidi
+          - entity: person.kevin
+      - show_current: true
+        show_forecast: true
+        type: weather-forecast
+        entity: weather.home
+        secondary_info_attribute: wind_speed
+      - type: conditional
+        conditions:
+          - entity: sensor.low_batteries
+            state_not: none
+        card:
+          type: entities
+          entities:
+            - entity: sensor.low_batteries
+      - type: conditional
+        conditions:
+          - entity: sensor.electricity_price_level
+            state_not: Normal
+        card:
+          square: false
+          columns: 2
+          type: grid
+          cards:
+            - type: entity
+              entity: sensor.electricity_price
+              icon: mdi:lightning-bolt
+              name: Price
+            - type: entity
+              entity: sensor.electricity_price_emoji
+              name: Mood
+              icon: mdi:lightning-bolt
+            - type: entity
+              entity: sensor.monthly_cost_home
+              state_color: false
+              name: Bill so far
+      - type: conditional
+        conditions:
+          - entity: light.hallway_lights
+            state: 'on'
+        card:
+          show_name: true
+          show_icon: true
+          show_state: true
+          type: glance
+          entities:
+            - entity: sensor.first_subway
+              name: Subway
+            - entity: sensor.entur_okern_aldershjem
+              name: Bus
+            - entity: sensor.oslo_bysykkel_cf4a1731ae3fc4ff85d0531db84cfc08
+            - entity: sensor.oslo_bysykkel_1b863d3a438c081da770fec22cf3d2e8
+          state_color: false
+      - type: conditional
+        conditions:
+          - entity: media_player.kitchen_speaker
+            state: 'on'
+        card:
+          type: media-control
+          entity: media_player.kitchen_speaker
   - title: Lights
     path: lights
     icon: mdi:lightbulb
@@ -254,6 +249,20 @@ views:
             icon: mdi:ceiling-light-multiple
         columns: 2
         square: false
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: call-service
+          service: switch.turn_on
+          data: {}
+          target:
+            entity_id: switch.bot_0618
+        entity: switch.bot_0618
+        hold_action:
+          action: more-info
+        icon: mdi:robot-vacuum
+        name: Start Roomba
   - title: Kitchen
     path: kitchen
     icon: mdi:pot-steam
@@ -504,6 +513,11 @@ views:
               red: 7000
             needle: true
             entity: sensor.apartment_energy_usage
+      - hours_to_show: 12
+        graph: line
+        type: sensor
+        entity: sensor.electricity_price_in_12_hours
+        detail: 1
   - title: Infrastructure
     path: infrastructure
     icon: mdi:server
@@ -603,3 +617,10 @@ views:
               - type: entity
                 entity: sensor.nasdisk_56961b62ac8d11e68262f44d30631bd6
                 icon: mdi:harddisk
+      - type: conditional
+        conditions:
+          - entity: image_processing.tablet_front_camera
+            state_not: '0'
+        card:
+          type: markdown
+          content: '# Hello 👋'

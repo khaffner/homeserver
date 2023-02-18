@@ -4,7 +4,7 @@
   trigger:
   - platform: sun
     event: sunset
-    offset: '0'
+    offset: -00:30:00
   condition: []
   action:
   - service: light.turn_on
@@ -70,7 +70,7 @@
     target:
       entity_id: light.color_temperature_light_14
     data:
-      brightness_pct: 100
+      brightness_pct: 50
       kelvin: 6500
   - service: light.turn_on
     data:
@@ -335,7 +335,7 @@
   action:
   - service: light.turn_on
     data:
-      brightness_pct: 85
+      brightness_pct: 90
     target:
       entity_id: light.hallway_lights
   mode: single
@@ -470,4 +470,20 @@
     data: {}
     target:
       entity_id: light.dining_table_lamp
+  mode: single
+- id: '1672787107393'
+  alias: Turn off kitchen speaker when tv turns on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.living_room_tv
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id: media_player.kitchen_speaker
   mode: single
