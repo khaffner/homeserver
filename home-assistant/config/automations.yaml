@@ -72,36 +72,8 @@
     data:
       brightness_pct: 50
       kelvin: 6500
-  - service: light.turn_on
-    data:
-      transition: 5
-    target:
-      entity_id: light.dining_table_lamp
-  mode: single
-- id: '1637602345125'
-  alias: Electricity price alert
-  description: 'When price changes, to act on it. Do a laundry if cheap, turn off
-    floor heating if expensive, etc. '
-  trigger:
-  - platform: state
-    entity_id: sensor.tibber
-    id: Non-normal_electricity_price
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 10
-    attribute: price_level
-  condition: []
-  action:
-  - service: notify.living_room_tv
-    data:
-      message: Electricity price is now {{ states.sensor.electricity_price_level.state
-        | lower }}
-  - service: notify.mobile_app_s22_ultra
-    data:
-      title: Heads up
-      message: Electricity price is now {{ states.sensor.electricity_price_level.state
-        | lower }}
+  - service: script.turn_on_some_things
+    data: {}
   mode: single
 - id: '1637607890866'
   alias: Switch Office Off
@@ -347,7 +319,10 @@
     entity_id: binary_sensor.tradfri_motion_sensor_2
     from: 'off'
     to: 'on'
-  condition: []
+  condition:
+  - condition: state
+    entity_id: light.kitchen_lights
+    state: 'off'
   action:
   - service: light.turn_on
     target:
@@ -486,4 +461,70 @@
     data: {}
     target:
       entity_id: media_player.kitchen_speaker
+  mode: single
+- id: '1677009537327'
+  alias: Coming home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - zone.home
+    from: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+  condition: []
+  action:
+  - service: script.turn_on_some_things
+    data: {}
+  mode: single
+- id: '1677009613653'
+  alias: Leaving home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - zone.home
+    to: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+  condition: []
+  action:
+  - service: script.turn_off_most_things
+    data: {}
+  mode: single
+- id: '1678609388231'
+  alias: Door handle notification
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.vibration_50
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_s22_ultra_app
+    data:
+      message: Door handle moved
+  mode: single
+- id: '1680435135244'
+  alias: Vacuum wednesdays
+  description: ''
+  trigger: []
+  condition:
+  - condition: time
+    weekday:
+    - wed
+    after: '13:00:00'
+    before: '13:01:00'
+  action:
+  - service: dreame_vacuum.vacuum_clean_segment
+    data:
+      segments: 3,8,1,2,7,6,5,4
+      suction_level: 4
+    target:
+      entity_id: vacuum.dreame
   mode: single

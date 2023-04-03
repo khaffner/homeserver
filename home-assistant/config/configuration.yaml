@@ -21,20 +21,9 @@ recorder:
 
 wake_on_lan:
 
-feedreader:
-  urls:
-    - https://www.nrk.no/toppsaker.rss
-  scan_interval:
-    minutes: 15
-  max_entries: 5
-
 sensor:
   - platform: citybikes
     radius: 1000
-
-  - platform: bitcoin
-    display_options:
-      - exchangerate
 
   - platform: nordpool
     region: "Oslo"
@@ -69,10 +58,10 @@ image_processing:
     url: "http://localhost:8080"
     detector: default
     source:
-      - entity_id: camera.192_168_1_190
-        name: Tablet front camera
+      - entity_id: camera.birds
+        name: Birds
     labels:
-      - name: person
+      - name: bird
         confidence: 50
 
 mqtt:

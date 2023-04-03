@@ -19,7 +19,7 @@ services:
       - '/etc/localtime:/etc/localtime:ro'
     network_mode: host
     restart: unless-stopped
-    image: homeassistant/home-assistant:2023.3.1
+    image: homeassistant/home-assistant:2023.3.6
   ###############################################################
   glances:
     container_name: glances

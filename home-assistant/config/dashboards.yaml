@@ -6,48 +6,38 @@ views:
     icon: mdi:exclamation-thick
     badges: []
     cards:
+      - type: vertical-stack
+        cards:
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.home
+            name: Hourly forecast
+          - type: conditional
+            conditions:
+              - entity: binary_sensor.chance_of_precipitation
+                state: 'on'
+            card:
+              type: iframe
+              url: >-
+                https://embed.windy.com/embed2.html?lat=59.832&lon=10.701&detailLat=59.781&detailLon=10.750&width=650&height=450&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
+              aspect_ratio: 100%
       - type: conditional
         conditions:
           - entity: binary_sensor.soil_dry
             state: 'on'
         card:
-          type: markdown
-          content: '### Water the plants'
-      - type: conditional
-        conditions:
-          - entity: binary_sensor.posten_binary_sensor
-            state: 'on'
-        card:
-          type: markdown
-          content: '### Check mailbox today'
-      - type: conditional
-        conditions:
-          - entity: media_player.living_room_tv
-            state: 'on'
-        card:
-          type: media-control
-          entity: media_player.living_room_tv
-      - type: conditional
-        conditions:
-          - entity: media_player.kitchen_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.kitchen_speaker
-      - type: conditional
-        conditions:
-          - entity: media_player.big_bathroom_speaker
-            state: 'on'
-        card:
-          type: media-control
-          entity: media_player.big_bathroom_speaker
-      - type: conditional
-        conditions:
-          - entity: media_player.small_bathroom_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.small_bathroom_speaker
+          show_name: true
+          show_icon: true
+          type: button
+          tap_action:
+            action: none
+          entity: sensor.flower_care_moisture
+          name: Please water the plants 🌱
+          icon: mdi:watering-can
+          show_state: false
+          hold_action:
+            action: none
       - type: glance
         entities:
           - entity: sensor.sm_g970f_battery_level
@@ -56,11 +46,13 @@ views:
             name: S22 Ultra
           - entity: person.heidi
           - entity: person.kevin
-      - show_current: true
-        show_forecast: true
-        type: weather-forecast
-        entity: weather.home
-        secondary_info_attribute: wind_speed
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.posten_binary_sensor
+            state: 'on'
+        card:
+          type: markdown
+          content: '### Check mailbox today'
       - type: conditional
         conditions:
           - entity: sensor.low_batteries
@@ -81,18 +73,31 @@ views:
             - type: entity
               entity: sensor.electricity_price
               icon: mdi:lightning-bolt
-              name: Price
+              name: Electricity price
             - type: entity
               entity: sensor.electricity_price_emoji
               name: Mood
               icon: mdi:lightning-bolt
-            - type: entity
-              entity: sensor.monthly_cost_home
-              state_color: false
-              name: Bill so far
+      - type: gauge
+        entity: sensor.temperatures
+        name: Average inside temp
+        min: 18
+        max: 30
+        needle: true
+        severity:
+          green: 20
+          yellow: 23
+          red: 25
       - type: conditional
         conditions:
-          - entity: light.hallway_lights
+          - entity: media_player.kitchen_speaker
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.kitchen_speaker
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.subway_active
             state: 'on'
         card:
           show_name: true
@@ -109,11 +114,59 @@ views:
           state_color: false
       - type: conditional
         conditions:
-          - entity: media_player.kitchen_speaker
-            state: 'on'
+          - entity: media_player.living_room_tv
+            state_not: 'off'
         card:
           type: media-control
-          entity: media_player.kitchen_speaker
+          entity: media_player.living_room_tv
+      - type: vertical-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: vacuum.dreame
+              - entity: sensor.dreame_battery_level
+                secondary_info: none
+                name: Dreame battery
+              - entity: select.dreame_water_volume
+            show_header_toggle: false
+          - show_state: true
+            show_name: false
+            camera_view: live
+            type: picture-entity
+            image: https://demo.home-assistant.io/stub_config/bedroom.png
+            camera_image: camera.dreame_map
+            entity: sensor.dreame_current_room
+            aspect_ratio: '0.9'
+            hold_action:
+              action: none
+            tap_action:
+              action: none
+      - type: history-graph
+        entities:
+          - entity: sensor.electricity_price_in_12_hours
+        hours_to_show: 12
+      - type: conditional
+        conditions:
+          - entity: media_player.cc_living_room_tv
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.cc_living_room_tv
+      - type: conditional
+        conditions:
+          - entity: camera.birds
+            state_not: unavailable
+        card:
+          show_state: false
+          show_name: false
+          camera_view: live
+          type: picture-entity
+          entity: camera.birds
+          tap_action:
+            action: navigate
+            navigation_path: /lovelace/birds
+          hold_action:
+            action: none
   - title: Lights
     path: lights
     icon: mdi:lightbulb
@@ -129,8 +182,21 @@ views:
           - entity: light.color_temperature_light_15
           - entity: light.dimmable_light_26
           - entity: light.color_temperature_light_14
+          - entity: light.color_temperature_light_11
         title: Lights
-        state_color: false
+        state_color: true
+  - theme: Backend-selected
+    title: Birds
+    path: birds
+    icon: mdi:bird
+    type: panel
+    badges: []
+    cards:
+      - camera_view: live
+        type: picture-glance
+        image: https://demo.home-assistant.io/stub_config/kitchen.png
+        entities: []
+        camera_image: camera.birds
   - title: Living Room
     path: living-room
     icon: mdi:sofa
@@ -249,226 +315,6 @@ views:
             icon: mdi:ceiling-light-multiple
         columns: 2
         square: false
-      - show_name: true
-        show_icon: true
-        type: button
-        tap_action:
-          action: call-service
-          service: switch.turn_on
-          data: {}
-          target:
-            entity_id: switch.bot_0618
-        entity: switch.bot_0618
-        hold_action:
-          action: more-info
-        icon: mdi:robot-vacuum
-        name: Start Roomba
-  - title: Kitchen
-    path: kitchen
-    icon: mdi:pot-steam
-    visible:
-      - user: 7f702db65ced48ce8de7b2e87008c5f5
-      - user: fa4111af78a441249e7849591abe64f5
-      - user: f292b8931b6c4b1285149e6723483495
-      - user: fc3719ffd419499088a88ed5deb0dba5
-      - user: 18ba6918ac134a15bfbbf7650305881f
-      - user: c86c91d281fa48eea243273fd5c35626
-    badges: []
-    cards:
-      - type: conditional
-        conditions:
-          - entity: media_player.kitchen_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.kitchen_speaker
-      - type: grid
-        cards:
-          - type: gauge
-            entity: sensor.kitchen_hood
-            min: 15
-            max: 30
-            severity:
-              green: 20
-              yellow: 24
-              red: 27
-            name: Hood
-          - type: gauge
-            entity: sensor.kitchen_hood_2
-            min: 0
-            max: 100
-            severity:
-              green: 20
-              yellow: 50
-              red: 60
-            name: Hood
-        square: false
-        columns: 2
-      - type: light
-        entity: light.kitchen_lights
-        name: ' '
-        double_tap_action:
-          action: none
-      - type: grid
-        cards:
-          - type: entity
-            entity: binary_sensor.openclose_23
-            name: Fridge
-            icon: mdi:fridge
-            state_color: true
-          - type: entity
-            entity: binary_sensor.openclose_24
-            name: Freezer
-            icon: mdi:fridge
-            state_color: true
-        columns: 2
-        square: false
-  - title: Bedroom
-    path: bedroom
-    icon: mdi:sleep
-    visible:
-      - user: 7f702db65ced48ce8de7b2e87008c5f5
-      - user: fa4111af78a441249e7849591abe64f5
-      - user: fc3719ffd419499088a88ed5deb0dba5
-      - user: 18ba6918ac134a15bfbbf7650305881f
-      - user: f292b8931b6c4b1285149e6723483495
-    badges: []
-    cards:
-      - type: light
-        entity: light.color_temperature_light_14
-        icon: mdi:wall-sconce-flat
-        name: ' '
-      - type: grid
-        columns: 2
-        cards:
-          - type: gauge
-            entity: sensor.temperature_18
-            min: 15
-            max: 30
-            severity:
-              green: 20
-              yellow: 24
-              red: 27
-            name: ' '
-          - type: gauge
-            entity: sensor.humidity_19
-            min: 0
-            max: 100
-            severity:
-              green: 20
-              yellow: 50
-              red: 60
-            name: ' '
-        square: false
-  - title: Office
-    path: office
-    icon: mdi:briefcase-account
-    badges: []
-    cards:
-      - type: light
-        entity: light.color_temperature_light_15
-        icon: mdi:wall-sconce-flat
-        name: ' '
-      - type: light
-        entity: light.dimmable_light_26
-        icon: mdi:lightbulb
-        name: ' '
-      - type: light
-        entity: light.dimmable_light_16
-        icon: mdi:wall-sconce
-        name: ' '
-      - type: media-control
-        entity: media_player.office_tv
-  - title: Guest Room
-    path: guest-room
-    icon: mdi:bag-suitcase
-    badges: []
-    cards:
-      - type: light
-        entity: light.guest_room_lights
-        name: ' '
-  - title: Small bathroom
-    path: small-bathroom
-    icon: mdi:human-male
-    badges: []
-    cards:
-      - type: conditional
-        conditions:
-          - entity: media_player.small_bathroom_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.small_bathroom_speaker
-      - type: grid
-        columns: 2
-        cards:
-          - type: gauge
-            entity: sensor.temperature_14
-            min: 15
-            max: 30
-            severity:
-              green: 20
-              yellow: 24
-              red: 27
-            name: ' '
-          - type: gauge
-            entity: sensor.humidity_15
-            min: 0
-            max: 100
-            severity:
-              green: 20
-              yellow: 50
-              red: 60
-            name: ' '
-        square: false
-  - title: Big Bathroom
-    path: big-bathroom
-    icon: mdi:human-female
-    badges: []
-    cards:
-      - type: conditional
-        conditions:
-          - entity: media_player.big_bathroom_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.big_bathroom_speaker
-      - type: grid
-        columns: 2
-        cards:
-          - type: gauge
-            entity: sensor.temperature_11
-            min: 15
-            max: 30
-            severity:
-              green: 20
-              yellow: 24
-              red: 27
-            name: ' '
-          - type: gauge
-            entity: sensor.humidity_12
-            min: 0
-            max: 100
-            severity:
-              green: 20
-              yellow: 50
-              red: 60
-            name: ' '
-        square: false
-  - theme: Backend-selected
-    title: Balcony
-    path: balcony
-    icon: mdi:balcony
-    badges: []
-    cards:
-      - show_name: true
-        show_icon: true
-        type: button
-        tap_action:
-          action: toggle
-        entity: switch.on_off_plug_in_unit_12
-        icon: mdi:string-lights
-        name: Vinterbelysning
   - title: Electricity
     path: utilities
     icon: mdi:tools
@@ -537,7 +383,7 @@ views:
               - hours_to_show: 24
                 graph: line
                 type: sensor
-                entity: sensor.asuswrt_devices_connected
+                entity: sensor.rt_ac3200_connected_devices
                 detail: 1
                 name: Devices on network
                 unit: ' '
