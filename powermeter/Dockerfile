@@ -1,6 +1,4 @@
-FROM debian:bullseye-slim
-
-RUN apt-get install mosquitto-clients -y
+FROM eclipse-mosquitto
 
 ADD script.sh /app/script.sh
 RUN chmod +x /app/script.sh
