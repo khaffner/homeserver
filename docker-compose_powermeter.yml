@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  ###############################################################
+  powermeter:
+    container_name: powermeter
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0
+    env_file:
+      - ./powermeter/secrets.env
+    build:
+      context: ./powermeter
+      dockerfile: Dockerfile
