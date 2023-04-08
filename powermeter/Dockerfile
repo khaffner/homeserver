@@ -1,4 +1,4 @@
-FROM arm32v5/debian:bullseye-slim
+FROM debian:bullseye-slim
 
 RUN apt-get install mosquitto-clients -y
 
