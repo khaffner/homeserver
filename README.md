@@ -14,6 +14,6 @@ To configure, rename secrets.env.template to secrets.env and replace values with
 
 To start powermeter on the pi zero, run:
 ```console
-cd homeserver && docker-compose -f docker-compose_powermeter.yml up -d
+cd homeserver && docker-compose -f docker-compose_powermeter.yml up -d --build
 ```
 [Powermeter hardware docs](http://lechacal.com/wiki/index.php?title=RPICT3V1)
