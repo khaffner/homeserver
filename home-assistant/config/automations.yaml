@@ -513,18 +513,117 @@
 - id: '1680435135244'
   alias: Vacuum wednesdays
   description: ''
-  trigger: []
+  trigger:
+  - platform: time
+    at: '13:00:00'
   condition:
   - condition: time
     weekday:
     - wed
-    after: '13:00:00'
-    before: '13:01:00'
+    after: 00:00:00
+    before: 00:00:00
   action:
   - service: dreame_vacuum.vacuum_clean_segment
     data:
-      segments: 3,8,1,2,7,6,5,4
       suction_level: 4
+      segments: {}
     target:
       entity_id: vacuum.dreame
+  mode: single
+- id: '1680553454510'
+  alias: Vacuum alarm clock
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:00:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: dreame_vacuum.vacuum_clean_segment
+    data:
+      segments:
+      - 5
+    target:
+      entity_id: vacuum.dreame
+  mode: single
+- id: '1680553619195'
+  alias: Vacuum Kitchen and Hallway daily
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:30:00'
+  condition: []
+  action:
+  - service: dreame_vacuum.vacuum_clean_segment
+    data:
+      segments:
+      - 6
+      - 8
+    target:
+      entity_id: vacuum.dreame
+  mode: single
+- id: '1680554756971'
+  alias: Turn up TV while vacuuming
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - vacuum.dreame
+    to: cleaning
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.15
+    target:
+      entity_id: media_player.living_room_tv
+  mode: single
+- id: '1680554827504'
+  alias: Turn down TV after vacuuming
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - vacuum.dreame
+    to: docked
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.1
+    target:
+      entity_id: media_player.living_room_tv
+  mode: single
+- id: '1680599724180'
+  alias: Bird notification
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - image_processing.birds
+    from: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition: []
+  action:
+  - service: notify.mobile_app_s22_ultra_app
+    data:
+      title: "Birds! \U0001F426"
+      data:
+        image: /api/camera_proxy/camera.birds
+      message: Motion detected!
+  - service: notify.mobile_app_galaxy_s10e
+    data:
+      message: Motion detected!
+      title: "Birds! \U0001F426"
+      data:
+        image: /api/camera_proxy/camera.birds
   mode: single

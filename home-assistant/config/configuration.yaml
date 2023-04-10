@@ -38,15 +38,9 @@ sensor:
       - 'RUT:Line:5'
       - 'RUT:Line:60'
   
-  - platform: integration
-    source: sensor.apartment_energy_usage_triggered
-    name: Electricity kWh
-    unit_prefix: k
-    round: 2
-  
   - platform: statistics
-    name: "Apartment Energy use average last 5 seconds"
-    entity_id: sensor.apartment_energy_usage
+    name: "Apartment Watt average last 5 seconds"
+    entity_id: sensor.apartment_watt
     state_characteristic: average_linear
     precision: 0
     max_age:
@@ -62,28 +56,17 @@ image_processing:
         name: Birds
     labels:
       - name: bird
-        confidence: 50
+        confidence: 35
 
 mqtt:
   sensor:
-    - name: "Apartment Energy Usage"
-      # Consider apparent power, which might be named Realpower2
-      state_topic: "apartment_power/sensor/RPICT3V1_Realpower1"
+    - name: "Apartment Watt"
+      state_topic: "powermeter"
       unit_of_measurement: "W"
       device_class: power
-      value_template: "{{ value | int }}"
+      value_template: "{{value.split('_')[1] | round }}"
 
-template:
-  - trigger:
-      - platform: time_pattern
-        seconds: "/5" # Every 5 seconds
-    sensor:
-      - name: "Apartment Energy Usage Triggered"
-        unit_of_measurement: "W"
-        device_class: power
-        state: "{{ states('sensor.apartment_energy_usage') }}"
-
-      
+template:      
   - sensor:
       - name: TV Volume
         unit_of_measurement: "%"

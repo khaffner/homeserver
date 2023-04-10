@@ -129,11 +129,10 @@ views:
                 name: Dreame battery
               - entity: select.dreame_water_volume
             show_header_toggle: false
-          - show_state: true
+          - show_state: false
             show_name: false
-            camera_view: live
+            camera_view: auto
             type: picture-entity
-            image: https://demo.home-assistant.io/stub_config/bedroom.png
             camera_image: camera.dreame_map
             entity: sensor.dreame_current_room
             aspect_ratio: '0.9'
@@ -141,6 +140,10 @@ views:
               action: none
             tap_action:
               action: none
+      - type: history-graph
+        entities:
+          - entity: sensor.apartment_watt_average_last_5_seconds
+        hours_to_show: 12
       - type: history-graph
         entities:
           - entity: sensor.electricity_price_in_12_hours
@@ -157,16 +160,40 @@ views:
           - entity: camera.birds
             state_not: unavailable
         card:
-          show_state: false
-          show_name: false
-          camera_view: live
-          type: picture-entity
-          entity: camera.birds
-          tap_action:
-            action: navigate
-            navigation_path: /lovelace/birds
-          hold_action:
-            action: none
+          type: vertical-stack
+          cards:
+            - camera_view: live
+              type: picture-glance
+              entities: []
+              camera_image: camera.birds
+              tap_action:
+                action: navigate
+                navigation_path: /lovelace/birds
+              hold_action:
+                action: none
+            - type: conditional
+              conditions:
+                - entity: image_processing.birds
+                  state_not: '0'
+              card:
+                type: entity
+                entity: image_processing.birds
+                icon: mdi:bird
+                attribute: total_matches
+      - type: conditional
+        conditions:
+          - entity: media_player.big_bathroom_speaker
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.big_bathroom_speaker
+      - type: conditional
+        conditions:
+          - entity: media_player.small_bathroom_speaker
+            state_not: 'off'
+        card:
+          type: media-control
+          entity: media_player.small_bathroom_speaker
   - title: Lights
     path: lights
     icon: mdi:lightbulb
@@ -344,21 +371,12 @@ views:
             name: Mood
       - type: vertical-stack
         cards:
-          - hours_to_show: 1
+          - hours_to_show: 24
             graph: line
             type: sensor
             icon: mdi:lightning-bolt
             detail: 2
-            entity: sensor.apartment_energy_usage
-          - type: gauge
-            min: 0
-            max: 10000
-            severity:
-              green: 0
-              yellow: 4000
-              red: 7000
-            needle: true
-            entity: sensor.apartment_energy_usage
+            entity: sensor.apartment_watt_average_last_5_seconds
       - hours_to_show: 12
         graph: line
         type: sensor
