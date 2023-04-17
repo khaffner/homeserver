@@ -17,9 +17,11 @@ services:
     volumes:
       - '/home/kevin/Dockervolumes/home-assistant/:/config'
       - '/etc/localtime:/etc/localtime:ro'
+    env_file:
+      - ./home-assistant/secrets.env
     network_mode: host
     restart: unless-stopped
-    image: homeassistant/home-assistant:2023.3.6
+    image: homeassistant/home-assistant:2023.4.4
   ###############################################################
   glances:
     container_name: glances
