@@ -46,6 +46,11 @@ sensor:
     max_age:
       seconds: 10
 
+  - platform: command_line
+    name: Techem
+    command: bash /config/scripts/bash/techem.sh
+    scan_interval: 60 #86400
+
 image_processing:
   - platform: doods
     scan_interval: 3
@@ -68,6 +73,10 @@ mqtt:
 
 template:      
   - sensor:
+      - name: Bird confidence
+        unit_of_measurement: "%"
+        state: "{{state_attr('image_processing.birds','summary').bird|default(0)}}"
+
       - name: TV Volume
         unit_of_measurement: "%"
         state: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
@@ -131,3 +140,17 @@ template:
           {% else %}
             {{ ns.below | join('\n') }}{% set ns = namespace(below=[]) %}
           {% endif %}
+      
+      # This section is stupid because sensor.techem won't be parsed well as json. Is probably solvable in jinja or graphql..
+      - name: District Heating Usage
+        unit_of_measurement: "kWh"
+        state: "{{ (((states('sensor.techem') | from_json)[0]['value'])/7) | round(0) }}"
+      - name: Distric Heating Usage Compared To Neighbors
+        unit_of_measurement: "%"
+        state: "{{ (states('sensor.techem') | from_json)[0]['comparePercent'] }}"
+      - name: Hot Water Usage
+        unit_of_measurement: "L"
+        state: "{{ (((states('sensor.techem') | from_json)[1]['value'])/7*1000) | round(0) }}"
+      - name: Hot Water Usage Compared To Neighbors
+        unit_of_measurement: "%"
+        state: "{{ (states('sensor.techem') | from_json)[1]['comparePercent'] }}"
