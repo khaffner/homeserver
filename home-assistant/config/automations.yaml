@@ -74,6 +74,13 @@
       kelvin: 6500
   - service: script.turn_on_some_things
     data: {}
+  - service: dreame_vacuum.vacuum_clean_segment
+    data:
+      segments:
+      - 5
+    target:
+      entity_id: vacuum.dreame
+    alias: Vacuum bedroom
   mode: single
 - id: '1637607890866'
   alias: Switch Office Off
@@ -473,7 +480,7 @@
     for:
       hours: 0
       minutes: 0
-      seconds: 10
+      seconds: 0
   condition: []
   action:
   - service: script.turn_on_some_things
@@ -489,8 +496,8 @@
     to: '0'
     for:
       hours: 0
-      minutes: 0
-      seconds: 10
+      minutes: 10
+      seconds: 0
   condition: []
   action:
   - service: script.turn_off_most_things
@@ -527,28 +534,6 @@
     data:
       suction_level: 4
       segments: {}
-    target:
-      entity_id: vacuum.dreame
-  mode: single
-- id: '1680553454510'
-  alias: Vacuum alarm clock
-  description: ''
-  trigger:
-  - platform: time
-    at: 06:00:00
-  condition:
-  - condition: time
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
-  action:
-  - service: dreame_vacuum.vacuum_clean_segment
-    data:
-      segments:
-      - 5
     target:
       entity_id: vacuum.dreame
   mode: single
@@ -611,7 +596,7 @@
     for:
       hours: 0
       minutes: 0
-      seconds: 2
+      seconds: 1
   condition: []
   action:
   - service: notify.mobile_app_s22_ultra_app
@@ -626,4 +611,18 @@
       title: "Birds! \U0001F426"
       data:
         image: /api/camera_proxy/camera.birds
+  mode: single
+- id: '1681828538059'
+  alias: Stove hood moisture alert
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ (states(''sensor.kitchen_hood_2'') | int) > 68 }}'
+  condition: []
+  action:
+  - service: tts.cloud_say
+    data:
+      cache: false
+      entity_id: media_player.kitchen_speaker
+      message: High moisture over stove
   mode: single

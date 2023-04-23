@@ -24,35 +24,18 @@ views:
               aspect_ratio: 100%
       - type: conditional
         conditions:
-          - entity: binary_sensor.soil_dry
-            state: 'on'
-        card:
-          show_name: true
-          show_icon: true
-          type: button
-          tap_action:
-            action: none
-          entity: sensor.flower_care_moisture
-          name: Please water the plants 🌱
-          icon: mdi:watering-can
-          show_state: false
-          hold_action:
-            action: none
-      - type: glance
-        entities:
-          - entity: sensor.sm_g970f_battery_level
-            name: S10e
-          - entity: sensor.s22_ultra_battery_level
-            name: S22 Ultra
-          - entity: person.heidi
-          - entity: person.kevin
-      - type: conditional
-        conditions:
           - entity: binary_sensor.posten_binary_sensor
             state: 'on'
         card:
           type: markdown
-          content: '### Check mailbox today'
+          content: '## Check mailbox today ✉️ '
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.soil_dry
+            state: 'on'
+        card:
+          type: markdown
+          content: '## Please water the plants 🌱'
       - type: conditional
         conditions:
           - entity: sensor.low_batteries
@@ -61,40 +44,45 @@ views:
           type: entities
           entities:
             - entity: sensor.low_batteries
-      - type: conditional
-        conditions:
-          - entity: sensor.electricity_price_level
-            state_not: Normal
-        card:
-          square: false
-          columns: 2
-          type: grid
-          cards:
-            - type: entity
-              entity: sensor.electricity_price
-              icon: mdi:lightning-bolt
-              name: Electricity price
-            - type: entity
-              entity: sensor.electricity_price_emoji
-              name: Mood
-              icon: mdi:lightning-bolt
-      - type: gauge
-        entity: sensor.temperatures
-        name: Average inside temp
-        min: 18
-        max: 30
-        needle: true
-        severity:
-          green: 20
-          yellow: 23
-          red: 25
-      - type: conditional
-        conditions:
-          - entity: media_player.kitchen_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.kitchen_speaker
+      - show_name: false
+        show_icon: true
+        show_state: true
+        type: glance
+        entities:
+          - entity: camera.dreame_map
+            show_state: false
+          - entity: vacuum.dreame
+          - entity: sensor.dreame_battery_level
+          - entity: sensor.dreame_current_room
+        state_color: true
+      - square: false
+        type: grid
+        cards:
+          - camera_view: auto
+            type: picture-glance
+            image: /local/faces/heidi_2.png
+            entities:
+              - entity: person.heidi
+              - entity: sensor.sm_g970f_battery_level
+              - entity: sensor.galaxy_s10e_steps_sensor
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            show_state: true
+          - camera_view: auto
+            type: picture-glance
+            image: /local/faces/kevin.jpeg
+            entities:
+              - entity: person.kevin
+              - entity: sensor.s22_ultra_battery_level
+              - entity: sensor.s22_ultra_steps_sensor
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            show_state: true
+        columns: 2
       - type: conditional
         conditions:
           - entity: binary_sensor.subway_active
@@ -112,49 +100,78 @@ views:
             - entity: sensor.oslo_bysykkel_cf4a1731ae3fc4ff85d0531db84cfc08
             - entity: sensor.oslo_bysykkel_1b863d3a438c081da770fec22cf3d2e8
           state_color: false
-      - type: conditional
-        conditions:
-          - entity: media_player.living_room_tv
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.living_room_tv
-      - type: vertical-stack
+      - type: markdown
+        content: >-
+          ### Power bill so far is {{ states("sensor.monthly_cost_home") | round
+          }} kr, price now is {{ states("sensor.electricity_price") }} øre,
+          which is {{ states("sensor.electricity_price_emoji") }}
+      - square: false
+        type: grid
         cards:
-          - type: entities
-            entities:
-              - entity: vacuum.dreame
-              - entity: sensor.dreame_battery_level
-                secondary_info: none
-                name: Dreame battery
-              - entity: select.dreame_water_volume
-            show_header_toggle: false
-          - show_state: false
-            show_name: false
-            camera_view: auto
-            type: picture-entity
-            camera_image: camera.dreame_map
-            entity: sensor.dreame_current_room
-            aspect_ratio: '0.9'
-            hold_action:
-              action: none
-            tap_action:
-              action: none
-      - type: history-graph
+          - type: gauge
+            entity: sensor.apartment_watt_average_last_5_seconds
+            name: Apartment energy usage
+            needle: true
+            severity:
+              green: 0
+              yellow: 1000
+              red: 4000
+            min: 0
+            max: 6500
+          - type: gauge
+            entity: sensor.temperatures
+            name: Average inside temp
+            min: 18
+            max: 30
+            needle: true
+            severity:
+              green: 20
+              yellow: 23
+              red: 25
+          - type: gauge
+            entity: sensor.hot_water_usage
+            name: Hot water
+            needle: true
+            max: 50
+            severity:
+              green: 0
+              yellow: 25
+              red: 40
+            min: 0
+          - type: gauge
+            entity: sensor.district_heating_usage
+            name: Distric heating
+            severity:
+              green: 3
+              yellow: 15
+              red: 20
+            max: 25
+            needle: true
+          - type: markdown
+            content: >-
+              We used {{ states("sensor.hot_water_usage_compared_to_neighbors")
+              | round }}% less water than our neighbors!
+          - type: markdown
+            content: >-
+              We used {{
+              states("sensor.distric_heating_usage_compared_to_neighbors") |
+              round }}% less district heating than our neighbors!
+        columns: 2
+      - type: entity-filter
+        show_empty: false
         entities:
-          - entity: sensor.apartment_watt_average_last_5_seconds
-        hours_to_show: 12
-      - type: history-graph
-        entities:
-          - entity: sensor.electricity_price_in_12_hours
-        hours_to_show: 12
-      - type: conditional
-        conditions:
-          - entity: media_player.cc_living_room_tv
-            state_not: 'off'
+          - media_player.all_speakers
+          - media_player.big_bathroom_speaker
+          - media_player.cc_living_room_tv
+          - media_player.kitchen_speaker
+          - media_player.living_room_tv
+          - media_player.office_tv
+          - media_player.small_bathroom_speaker
+        state_filter:
+          - operator: '!='
+            value: 'off'
         card:
-          type: media-control
-          entity: media_player.cc_living_room_tv
+          type: entities
       - type: conditional
         conditions:
           - entity: camera.birds
@@ -171,29 +188,6 @@ views:
                 navigation_path: /lovelace/birds
               hold_action:
                 action: none
-            - type: conditional
-              conditions:
-                - entity: image_processing.birds
-                  state_not: '0'
-              card:
-                type: entity
-                entity: image_processing.birds
-                icon: mdi:bird
-                attribute: total_matches
-      - type: conditional
-        conditions:
-          - entity: media_player.big_bathroom_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.big_bathroom_speaker
-      - type: conditional
-        conditions:
-          - entity: media_player.small_bathroom_speaker
-            state_not: 'off'
-        card:
-          type: media-control
-          entity: media_player.small_bathroom_speaker
   - title: Lights
     path: lights
     icon: mdi:lightbulb
@@ -213,6 +207,27 @@ views:
         title: Lights
         state_color: true
   - theme: Backend-selected
+    title: Media
+    path: media
+    icon: mdi:play-pause
+    badges: []
+    cards:
+      - type: entity-filter
+        show_empty: false
+        entities:
+          - media_player.all_speakers
+          - media_player.big_bathroom_speaker
+          - media_player.cc_living_room_tv
+          - media_player.kitchen_speaker
+          - media_player.living_room_tv
+          - media_player.office_tv
+          - media_player.small_bathroom_speaker
+        state_filter:
+          - operator: '!='
+            value: 'off'
+        card:
+          type: entities
+  - theme: Backend-selected
     title: Birds
     path: birds
     icon: mdi:bird
@@ -224,187 +239,22 @@ views:
         image: https://demo.home-assistant.io/stub_config/kitchen.png
         entities: []
         camera_image: camera.birds
-  - title: Living Room
-    path: living-room
-    icon: mdi:sofa
-    visible:
-      - user: 7f702db65ced48ce8de7b2e87008c5f5
-      - user: fa4111af78a441249e7849591abe64f5
-      - user: f292b8931b6c4b1285149e6723483495
-      - user: fc3719ffd419499088a88ed5deb0dba5
-      - user: c86c91d281fa48eea243273fd5c35626
-    badges: []
-    cards:
-      - type: vertical-stack
-        cards:
-          - type: conditional
-            conditions:
-              - entity: media_player.cc_living_room_tv
-                state_not: 'off'
-            card:
-              type: media-control
-              entity: media_player.cc_living_room_tv
-          - type: conditional
-            conditions:
-              - entity: media_player.living_room_tv
-                state: 'off'
-            card:
-              type: button
-              entity: media_player.living_room_tv
-              name: Turn on TV
-              icon: mdi:television
-              tap_action:
-                action: call-service
-                service: media_player.turn_on
-                service_data: {}
-                target:
-                  entity_id: media_player.living_room_tv
-              show_state: false
-              show_icon: false
-              show_name: true
-              hold_action:
-                action: none
-          - type: conditional
-            conditions:
-              - entity: media_player.living_room_tv
-                state_not: 'off'
-            card:
-              type: media-control
-              entity: media_player.living_room_tv
-          - type: conditional
-            conditions:
-              - entity: media_player.living_room_tv
-                state_not: 'off'
-            card:
-              type: grid
-              cards:
-                - type: button
-                  tap_action:
-                    action: call-service
-                    service: media_player.turn_off
-                    service_data: {}
-                    target:
-                      entity_id: media_player.living_room_tv
-                  icon: mdi:power
-                  hold_action:
-                    action: none
-                  show_name: false
-                  show_state: false
-                  show_icon: true
-                - type: button
-                  tap_action:
-                    action: call-service
-                    service: media_player.volume_down
-                    service_data: {}
-                    target:
-                      entity_id: media_player.living_room_tv
-                  icon: mdi:volume-minus
-                  hold_action:
-                    action: none
-                  show_name: false
-                - type: button
-                  tap_action:
-                    action: call-service
-                    service: media_player.volume_up
-                    service_data: {}
-                    target:
-                      entity_id: media_player.living_room_tv
-                  icon: mdi:volume-plus
-                  hold_action:
-                    action: none
-                  show_name: false
-              square: false
-          - type: conditional
-            conditions:
-              - entity: media_player.living_room_tv
-                state: 'on'
-            card:
-              type: gauge
-              entity: sensor.tv_volume
-              min: 0
-              severity:
-                green: 0
-                yellow: 20
-                red: 30
-              max: 50
-      - type: grid
-        cards:
-          - type: light
-            entity: light.corner_lamp
-            icon: mdi:floor-lamp-dual
-            name: ' '
-          - type: light
-            entity: light.color_temperature_light_11
-            name: ' '
-          - type: light
-            entity: light.dining_table_lamp
-            name: ' '
-            icon: mdi:ceiling-light-multiple
-        columns: 2
-        square: false
-  - title: Electricity
-    path: utilities
-    icon: mdi:tools
-    visible:
-      - user: 7f702db65ced48ce8de7b2e87008c5f5
-      - user: fa4111af78a441249e7849591abe64f5
-      - user: fc3719ffd419499088a88ed5deb0dba5
-      - user: 18ba6918ac134a15bfbbf7650305881f
-      - user: f292b8931b6c4b1285149e6723483495
-    badges: []
-    cards:
-      - type: grid
-        columns: 2
-        square: false
-        cards:
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.electricity_price
-            name: Price
-            icon: mdi:currency-usd
-            detail: 2
-          - type: entity
-            entity: sensor.electricity_price_emoji
-            icon: mdi:currency-usd
-            state_color: false
-            name: Mood
-      - type: vertical-stack
-        cards:
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            icon: mdi:lightning-bolt
-            detail: 2
-            entity: sensor.apartment_watt_average_last_5_seconds
-      - hours_to_show: 12
-        graph: line
-        type: sensor
-        entity: sensor.electricity_price_in_12_hours
-        detail: 1
   - title: Infrastructure
     path: infrastructure
     icon: mdi:server
-    type: panel
     visible:
       - user: 7f702db65ced48ce8de7b2e87008c5f5
       - user: fa4111af78a441249e7849591abe64f5
       - user: f292b8931b6c4b1285149e6723483495
       - user: fc3719ffd419499088a88ed5deb0dba5
       - user: c86c91d281fa48eea243273fd5c35626
+    type: panel
     badges: []
     cards:
       - type: vertical-stack
         cards:
           - type: horizontal-stack
             cards:
-              - hours_to_show: 24
-                graph: line
-                type: sensor
-                entity: sensor.rt_ac3200_connected_devices
-                detail: 1
-                name: Devices on network
-                unit: ' '
               - type: sensor
                 entity: sensor.speedtest_download
                 graph: line
@@ -449,42 +299,3 @@ views:
                   yellow: 50
                   red: 75
                 name: RAM
-          - type: horizontal-stack
-            cards:
-              - type: entity
-                entity: sensor.nasdisk_55cd2e144d138fbf
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_5000c5009d240e38
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_fa69fe43ac3411e68261f44d30631bd6
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_048d1e615803f1d9efe893de74500e6d
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_40e63529103f167d4b4bc85b3caf607b
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_40e63529103f167d4b4bc85b3caf607b
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_f125277fbc04efc332c438784c4a5cfa
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_adeeee9657d595d9c2528bc46e852a0b
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_94cecda3f527c7417f8d100e38fd07b6
-                icon: mdi:harddisk
-              - type: entity
-                entity: sensor.nasdisk_56961b62ac8d11e68262f44d30631bd6
-                icon: mdi:harddisk
-      - type: conditional
-        conditions:
-          - entity: image_processing.tablet_front_camera
-            state_not: '0'
-        card:
-          type: markdown
-          content: '# Hello 👋'

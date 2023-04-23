@@ -49,7 +49,7 @@ sensor:
   - platform: command_line
     name: Techem
     command: bash /config/scripts/bash/techem.sh
-    scan_interval: 86400
+    scan_interval: 3600
 
 image_processing:
   - platform: doods
