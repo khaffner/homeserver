@@ -73,9 +73,9 @@ services:
       - 1883:1883
       - 9001:9001
   #################################################################
-  doods:
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: frigate
+    volume: /home/kevin/Dockervolumes/frigate:/config/config.yaml
     ports:
-      - '8080:8080'
-    container_name: doods
-    restart: unless-stopped
-    image: snowzach/doods2:latest
+      - 5000:5000
