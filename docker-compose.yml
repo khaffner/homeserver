@@ -76,6 +76,6 @@ services:
   frigate:
     image: ghcr.io/blakeblackshear/frigate:stable
     container_name: frigate
-    volume: /home/kevin/Dockervolumes/frigate:/config/config.yaml
+    volume: /home/kevin/Dockervolumes/frigate:/config
     ports:
       - 5000:5000
