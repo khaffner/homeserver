@@ -44,16 +44,22 @@ views:
           type: entities
           entities:
             - entity: sensor.low_batteries
+      - type: conditional
+        conditions:
+          - entity: sensor.offline_services
+            state_not: none
+        card:
+          type: entities
+          entities:
+            - entity: sensor.offline_services
       - show_name: false
         show_icon: true
-        show_state: true
+        show_state: false
         type: glance
         entities:
           - entity: camera.dreame_map
-            show_state: false
           - entity: vacuum.dreame
           - entity: sensor.dreame_battery_level
-          - entity: sensor.dreame_current_room
         state_color: true
       - square: false
         type: grid
@@ -64,31 +70,27 @@ views:
             entities:
               - entity: person.heidi
               - entity: sensor.sm_g970f_battery_level
-              - entity: sensor.galaxy_s10e_steps_sensor
             tap_action:
               action: none
             hold_action:
               action: none
-            show_state: true
           - camera_view: auto
             type: picture-glance
             image: /local/faces/kevin.jpeg
             entities:
               - entity: person.kevin
               - entity: sensor.s22_ultra_battery_level
-              - entity: sensor.s22_ultra_steps_sensor
             tap_action:
               action: none
             hold_action:
               action: none
-            show_state: true
         columns: 2
       - type: conditional
         conditions:
           - entity: binary_sensor.subway_active
             state: 'on'
         card:
-          show_name: true
+          show_name: false
           show_icon: true
           show_state: true
           type: glance
@@ -97,6 +99,7 @@ views:
               name: Subway
             - entity: sensor.entur_okern_aldershjem
               name: Bus
+              icon: mdi:bus-side
             - entity: sensor.oslo_bysykkel_cf4a1731ae3fc4ff85d0531db84cfc08
             - entity: sensor.oslo_bysykkel_1b863d3a438c081da770fec22cf3d2e8
           state_color: false
@@ -149,13 +152,14 @@ views:
             needle: true
           - type: markdown
             content: >-
-              We used {{ states("sensor.hot_water_usage_compared_to_neighbors")
-              | round }}% less water than our neighbors!
+              We used {{ 100 +
+              states("sensor.hot_water_usage_compared_to_neighbors") | round }}%
+              of what our neighbors use!
           - type: markdown
             content: >-
-              We used {{
+              We used {{ 100 +
               states("sensor.distric_heating_usage_compared_to_neighbors") |
-              round }}% less district heating than our neighbors!
+              round }}% of what our neighbors use!
         columns: 2
       - type: entity-filter
         show_empty: false
@@ -172,22 +176,15 @@ views:
             value: 'off'
         card:
           type: entities
-      - type: conditional
-        conditions:
-          - entity: camera.birds
-            state_not: unavailable
-        card:
-          type: vertical-stack
-          cards:
-            - camera_view: live
-              type: picture-glance
-              entities: []
-              camera_image: camera.birds
-              tap_action:
-                action: navigate
-                navigation_path: /lovelace/birds
-              hold_action:
-                action: none
+      - camera_view: live
+        type: picture-glance
+        entities: []
+        camera_image: camera.birdhouse
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/birds
+        hold_action:
+          action: none
   - title: Lights
     path: lights
     icon: mdi:lightbulb
@@ -238,7 +235,16 @@ views:
         type: picture-glance
         image: https://demo.home-assistant.io/stub_config/kitchen.png
         entities: []
-        camera_image: camera.birds
+        camera_image: camera.birdhouse
+  - title: Pollen
+    path: pollen
+    type: panel
+    icon: mdi:flower-pollen
+    badges: []
+    cards:
+      - type: iframe
+        url: https://airmine-api.com/static/signage_home.html
+        aspect_ratio: 100%
   - title: Infrastructure
     path: infrastructure
     icon: mdi:server

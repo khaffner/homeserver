@@ -17,22 +17,20 @@
       transition: 10
   mode: single
 - id: '1637497527983'
-  alias: Night light dim
+  alias: 23:00, turn on lights sleep mode
   description: ''
   trigger:
   - platform: time
     at: '23:00'
   condition: []
   action:
-  - service: light.turn_on
+  - service: switch.turn_on
+    data: {}
     target:
-      entity_id: light.color_temperature_light_11
-    data:
-      brightness_pct: 10
-      transition: 10
+      entity_id: switch.adaptive_lighting_sleep_mode_all_lights
   mode: single
 - id: '1637598552629'
-  alias: Sunrise
+  alias: Sunrise, turn off night light and light sleep mode
   description: ''
   trigger:
   - platform: sun
@@ -43,6 +41,11 @@
   - service: light.turn_off
     target:
       entity_id: light.color_temperature_light_11
+    data: {}
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_sleep_mode_all_lights
   mode: single
 - id: '1637599717618'
   alias: Morning alarm
@@ -502,6 +505,26 @@
   action:
   - service: script.turn_off_most_things
     data: {}
+  - if:
+    - condition: time
+      before: '10:00:00'
+      weekday:
+      - sun
+      - sat
+      - fri
+      - thu
+      - wed
+      - tue
+      - mon
+    then:
+    - service: dreame_vacuum.vacuum_clean_segment
+      data:
+        segments:
+        - 6
+        - 8
+        suction_level: 4
+      target:
+        entity_id: vacuum.dreame
   mode: single
 - id: '1678609388231'
   alias: Door handle notification
@@ -536,54 +559,6 @@
       segments: {}
     target:
       entity_id: vacuum.dreame
-  mode: single
-- id: '1680553619195'
-  alias: Vacuum Kitchen and Hallway daily
-  description: ''
-  trigger:
-  - platform: time
-    at: '22:30:00'
-  condition: []
-  action:
-  - service: dreame_vacuum.vacuum_clean_segment
-    data:
-      segments:
-      - 6
-      - 8
-    target:
-      entity_id: vacuum.dreame
-  mode: single
-- id: '1680554756971'
-  alias: Turn up TV while vacuuming
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - vacuum.dreame
-    to: cleaning
-  condition: []
-  action:
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.15
-    target:
-      entity_id: media_player.living_room_tv
-  mode: single
-- id: '1680554827504'
-  alias: Turn down TV after vacuuming
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - vacuum.dreame
-    to: docked
-  condition: []
-  action:
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.1
-    target:
-      entity_id: media_player.living_room_tv
   mode: single
 - id: '1680599724180'
   alias: Bird notification

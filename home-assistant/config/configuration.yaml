@@ -51,17 +51,6 @@ sensor:
     command: bash /config/scripts/bash/techem.sh
     scan_interval: 3600
 
-image_processing:
-  - platform: doods
-    scan_interval: 3
-    url: "http://localhost:8080"
-    detector: default
-    source:
-      - entity_id: camera.birds
-        name: Birds
-    labels:
-      - name: bird
-        confidence: 35
 
 mqtt:
   sensor:
@@ -139,6 +128,20 @@ template:
             none
           {% else %}
             {{ ns.below | join('\n') }}{% set ns = namespace(below=[]) %}
+          {% endif %}
+
+      - name: Offline services
+        icon: mdi:server-network-off
+        state: >
+          {% set ns = namespace(down=[]) %}
+          {% for s in states.binary_sensor 
+            if s.entity_id.startswith('binary_sensor.uptimekuma') and s.state == 'off' %}
+          {% set ns.down = ns.down + [s.entity_id] %}
+          {% endfor %}
+          {% if ns.down | count ==  0  %}
+            none
+          {% else %}
+            {{ ns.down | join('\n') }}{% set ns = namespace(down=[]) %}
           {% endif %}
       
       # This section is stupid because sensor.techem won't be parsed well as json. Is probably solvable in jinja or graphql..
