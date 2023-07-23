@@ -15,6 +15,15 @@ views:
             name: Hourly forecast
           - type: conditional
             conditions:
+              - entity: sensor.wind_speed
+                state_not: '0'
+            card:
+              type: history-graph
+              entities:
+                - entity: sensor.wind_speed
+              hours_to_show: 168
+          - type: conditional
+            conditions:
               - entity: binary_sensor.chance_of_precipitation
                 state: 'on'
             card:
@@ -201,6 +210,7 @@ views:
           - entity: light.dimmable_light_26
           - entity: light.color_temperature_light_14
           - entity: light.color_temperature_light_11
+          - entity: switch.on_off_plug_in_unit_12
         title: Lights
         state_color: true
   - theme: Backend-selected

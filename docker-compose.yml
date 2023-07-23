@@ -21,7 +21,7 @@ services:
       - ./home-assistant/secrets.env
     network_mode: host
     restart: unless-stopped
-    image: homeassistant/home-assistant:2023.5.4
+    image: homeassistant/home-assistant:2023.7.3
   ###############################################################
   glances:
     container_name: glances

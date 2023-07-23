@@ -84,6 +84,7 @@
     target:
       entity_id: vacuum.dreame
     alias: Vacuum bedroom
+    enabled: false
   mode: single
 - id: '1637607890866'
   alias: Switch Office Off
@@ -368,20 +369,6 @@
       motion_entity: binary_sensor.tradfri_motion_sensor
       light_target:
         entity_id: light.dimmable_light_16
-- id: '1643576587760'
-  alias: Lights off offices 17
-  description: ''
-  trigger:
-  - platform: time
-    at: '17:00'
-  condition: []
-  action:
-  - service: light.turn_off
-    target:
-      entity_id:
-      - light.guest_room_lights
-    data: {}
-  mode: single
 - id: '1647899713913'
   alias: Switch Hallway Off
   description: ''

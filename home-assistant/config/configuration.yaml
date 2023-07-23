@@ -62,6 +62,14 @@ mqtt:
 
 template:      
   - sensor:
+      - name: Dishwasher tilt angle
+        unit_of_measurement: 'degrees'
+        state: "{{ state_attr('binary_sensor.vibration_51','tiltangle') }}"
+
+      - name: Wind Speed
+        unit_of_measurement: km/h
+        state: "{{ state_attr('weather.home','wind_speed') | round }}"
+
       - name: Bird confidence
         unit_of_measurement: "%"
         state: "{{state_attr('image_processing.birds','summary').bird|default(0)}}"
