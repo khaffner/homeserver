@@ -67,6 +67,7 @@ services:
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: mosquitto
+    restart: unless-stopped
     volumes:
       - '/home/kevin/Dockervolumes/mosquitto:/mosquitto'
     ports:
@@ -76,6 +77,7 @@ services:
   frigate:
     image: ghcr.io/blakeblackshear/frigate:stable
     container_name: frigate
+    restart: unless-stopped
     volumes:
       - /home/kevin/Dockervolumes/frigate_config:/config
       - /home/kevin/Dockervolumes/frigate_media:/media
