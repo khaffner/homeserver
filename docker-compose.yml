@@ -83,3 +83,10 @@ services:
       - /home/kevin/Dockervolumes/frigate_media:/media
     ports:
       - 5000:5000
+  #################################################################
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    env_file:
+      - ./duckdns/secrets.env
+    restart: unless-stopped
