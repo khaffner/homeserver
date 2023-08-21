@@ -15,15 +15,6 @@ views:
             name: Hourly forecast
           - type: conditional
             conditions:
-              - entity: sensor.wind_speed
-                state_not: '0'
-            card:
-              type: history-graph
-              entities:
-                - entity: sensor.wind_speed
-              hours_to_show: 168
-          - type: conditional
-            conditions:
               - entity: binary_sensor.chance_of_precipitation
                 state: 'on'
             card:
@@ -234,6 +225,45 @@ views:
             value: 'off'
         card:
           type: entities
+  - title: Minus
+    path: minus
+    icon: mdi:car
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.minus_soc
+            name: Battery
+            secondary_info: none
+            icon: mdi:car-battery
+          - entity: sensor.minus_battery_temp
+            name: Battery Temp
+            icon: mdi:thermometer
+            secondary_info: none
+          - entity: sensor.minus_gom
+            name: Km left
+            icon: mdi:ev-station
+          - entity: sensor.minus_rpm
+            name: RPM
+            icon: mdi:gauge
+          - entity: sensor.minus_odometer
+            name: Odometer
+            icon: mdi:map-marker-distance
+          - entity: sensor.minus_state
+            name: State
+            icon: mdi:car-info
+          - entity: sensor.minus_volts
+            name: Voltage
+            icon: mdi:car-battery
+          - entity: sensor.minus_cockpit_lights
+            name: Cockpit lights
+            icon: mdi:ceiling-light
+          - entity: sensor.minus_cockpit_handbrake
+            name: Handbrake
+            icon: mdi:car-brake-alert
+        title: Minus
+        state_color: false
+        show_header_toggle: false
   - theme: Backend-selected
     title: Birds
     path: birds

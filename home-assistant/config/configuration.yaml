@@ -2,6 +2,10 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
+homeassistant:
+  allowlist_external_dirs:
+    - /BT_CAN
+
 discovery:
   ignore:
     - homekit
@@ -50,6 +54,64 @@ sensor:
     name: Techem
     command: bash /config/scripts/bash/techem.sh
     scan_interval: 3600
+  
+  # Section for the car named Minus. This should be done better somehow..
+  - platform: command_line
+    name: Minus State Date
+    command: "grep 'StateDate' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus State Time
+    command: "grep 'StateTime' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus State
+    command: "grep 'State=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Speed
+    command: "grep 'Speed=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus RPM
+    command: "grep 'Rpm=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Odometer
+    command: "grep 'Odo=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus GOM
+    command: "grep 'RR=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus SoC
+    command: "grep 'SoC=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Ah
+    command: "grep 'Ah=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Volts
+    command: "grep 'Volts=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Wh per km
+    command: "grep 'Wh/km=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Battery Temp
+    command: "grep 'Batt_Temp=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Battery Temp low
+    command: "grep 'Batt_Temp_Low=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Battery Temp high
+    command: "grep 'Batt_Temp_High=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Heater Temp Flow
+    command: "grep 'Heater_Temp_Flow=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Heater Temp Return
+    command: "grep 'Heater_Temp_Return=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Cockpit Lights
+    command: "grep 'CockpitLights=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+  - platform: command_line
+    name: Minus Cockpit HandBrake
+    command: "grep 'CockpitHandBrake=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+
+  
 
 
 mqtt:
