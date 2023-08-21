@@ -17,6 +17,7 @@ services:
     volumes:
       - '/home/kevin/Dockervolumes/home-assistant/:/config'
       - '/etc/localtime:/etc/localtime:ro'
+      - '/home/kevin/BT_CAN/:/BT_CAN:ro'
     env_file:
       - ./home-assistant/secrets.env
     network_mode: host
