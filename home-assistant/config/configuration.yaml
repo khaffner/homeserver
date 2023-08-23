@@ -19,6 +19,9 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+command_line: !include command_line.yaml
+template: !include template.yaml
+
 recorder:
   purge_keep_days: 30
   commit_interval: 60
@@ -50,70 +53,6 @@ sensor:
     max_age:
       seconds: 10
 
-  - platform: command_line
-    name: Techem
-    command: bash /config/scripts/bash/techem.sh
-    scan_interval: 3600
-  
-  # Section for the car named Minus. This should be done better somehow..
-  - platform: command_line
-    name: Minus State Date
-    command: "grep 'StateDate' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus State Time
-    command: "grep 'StateTime' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus State
-    command: "grep 'State=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Speed
-    command: "grep 'Speed=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus RPM
-    command: "grep 'Rpm=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Odometer
-    command: "grep 'Odo=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus GOM
-    command: "grep 'RR=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus SoC
-    command: "grep 'SoC=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Ah
-    command: "grep 'Ah=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Volts
-    command: "grep 'Volts=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Wh per km
-    command: "grep 'Wh/km=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Battery Temp
-    command: "grep 'Batt_Temp=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Battery Temp low
-    command: "grep 'Batt_Temp_Low=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Battery Temp high
-    command: "grep 'Batt_Temp_High=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Heater Temp Flow
-    command: "grep 'Heater_Temp_Flow=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Heater Temp Return
-    command: "grep 'Heater_Temp_Return=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Cockpit Lights
-    command: "grep 'CockpitLights=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-  - platform: command_line
-    name: Minus Cockpit HandBrake
-    command: "grep 'CockpitHandBrake=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
-
-  
-
-
 mqtt:
   sensor:
     - name: "Apartment Watt"
@@ -121,109 +60,3 @@ mqtt:
       unit_of_measurement: "W"
       device_class: power
       value_template: "{{value.split('_')[1] | round }}"
-
-template:      
-  - sensor:
-      - name: Dishwasher tilt angle
-        unit_of_measurement: 'degrees'
-        state: "{{ state_attr('binary_sensor.vibration_51','tiltangle') }}"
-
-      - name: Wind Speed
-        unit_of_measurement: km/h
-        state: "{{ state_attr('weather.home','wind_speed') | round }}"
-
-      - name: Bird confidence
-        unit_of_measurement: "%"
-        state: "{{state_attr('image_processing.birds','summary').bird|default(0)}}"
-
-      - name: TV Volume
-        unit_of_measurement: "%"
-        state: "{{ state_attr('media_player.living_room_tv','volume_level') | multiply(100) | round }}"
-
-      - name: "Precipitation probability"
-        unit_of_measurement: "%"
-        state: "{{ state_attr('weather.home','forecast')[0].precipitation_probability | round }}"
-      
-      - name: "Electricity Price"
-        unit_of_measurement: "Øre"
-        state: "{{ states('sensor.tibber') | multiply(100) | round }}"
-      
-      - name: "Electricity Price Level"
-        state: "{{ state_attr('sensor.tibber','price_level') | capitalize | replace('_',' ') }}"
-      
-      - name: "First subway"
-        icon: mdi:subway-variant
-        unit_of_measurement: "min"
-        state: "{{ states('sensor.entur_okern_platform_2') }}"
-      
-      - name: "Next subway"
-        icon: mdi:subway-variant
-        unit_of_measurement: "min"
-        state: "{{ state_attr('sensor.entur_okern_platform_2','next_due_in') | replace('min','') }}"
-      
-      - name: Electricity price emoji
-        state: >
-          {% if state_attr('sensor.tibber','price_level') == "VERY_CHEAP" %}
-            😄
-          {% elif state_attr('sensor.tibber','price_level') == "CHEAP" %}
-            🙂
-          {% elif state_attr('sensor.tibber','price_level') == "NORMAL" %}
-            😐
-          {% elif state_attr('sensor.tibber','price_level') == "EXPENSIVE" %}
-            😠
-          {% elif state_attr('sensor.tibber','price_level') == "VERY_EXPENSIVE" %}
-            🤬
-          {% else %}
-            ?
-          {% endif %}
-
-      - name: Electricity price in 12 hours
-        unit_of_measurement: NOK
-        state: >
-          {% if now().hour <= 11  %}
-          {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today'))[now().hour + 12] }}
-          {% else %}
-          {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','tomorrow'))[now().hour - 12] }}
-          {% endif %}
-      
-      - name: Low batteries
-        icon: mdi:battery-10
-        state: >
-          {% set ns = namespace(below=[]) %}
-          {% for s in states.sensor 
-            if s.entity_id.endswith('battery_level') and s.state != 'unavailable' and s.state != 'unknown' and s.state|int < 5 %}
-          {% set ns.below = ns.below + [s.entity_id] %}
-          {% endfor %}
-          {% if ns.below | count ==  0  %}
-            none
-          {% else %}
-            {{ ns.below | join('\n') }}{% set ns = namespace(below=[]) %}
-          {% endif %}
-
-      - name: Offline services
-        icon: mdi:server-network-off
-        state: >
-          {% set ns = namespace(down=[]) %}
-          {% for s in states.binary_sensor 
-            if s.entity_id.startswith('binary_sensor.uptimekuma') and s.state == 'off' %}
-          {% set ns.down = ns.down + [s.entity_id] %}
-          {% endfor %}
-          {% if ns.down | count ==  0  %}
-            none
-          {% else %}
-            {{ ns.down | join('\n') }}{% set ns = namespace(down=[]) %}
-          {% endif %}
-      
-      # This section is stupid because sensor.techem won't be parsed well as json. Is probably solvable in jinja or graphql..
-      - name: District Heating Usage
-        unit_of_measurement: "kWh"
-        state: "{{ (((states('sensor.techem') | from_json)[0]['value'])/7) | round(0) }}"
-      - name: Distric Heating Usage Compared To Neighbors
-        unit_of_measurement: "%"
-        state: "{{ (states('sensor.techem') | from_json)[0]['comparePercent'] }}"
-      - name: Hot Water Usage
-        unit_of_measurement: "L"
-        state: "{{ (((states('sensor.techem') | from_json)[1]['value'])/7*1000) | round(0) }}"
-      - name: Hot Water Usage Compared To Neighbors
-        unit_of_measurement: "%"
-        state: "{{ (states('sensor.techem') | from_json)[1]['comparePercent'] }}"

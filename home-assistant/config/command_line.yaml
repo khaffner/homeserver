@@ -1,0 +1,77 @@
+- sensor:
+    name: Techem
+    command: bash /config/scripts/bash/techem.sh
+    scan_interval: 3600
+
+# Section for the car named Minus. This should be done better somehow..
+- sensor:
+    name: Minus State Date
+    command: "grep 'StateDate' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus State Time
+    command: "grep 'StateTime' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus State
+    command: "grep 'State=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Speed
+    command: "grep 'Speed=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: speed
+    unit_of_measurement: km/h
+- sensor:
+    name: Minus RPM
+    command: "grep 'Rpm=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    unit_of_measurement: RPM
+- sensor:
+    name: Minus Odometer
+    command: "grep 'Odo=' /BT_CAN/CarState.txt | cut -d '=' -f 2 | tr -d ','"
+    device_class: distance
+    unit_of_measurement: km
+- sensor:
+    name: Minus GOM
+    command: "grep 'RR=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: distance
+    unit_of_measurement: km
+- sensor:
+    name: Minus SoC
+    command: "grep 'SoC=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: battery
+    unit_of_measurement: '%'
+- sensor:
+    name: Minus Ah
+    command: "grep 'Ah=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Volts
+    command: "grep 'Volts=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: voltage
+    unit_of_measurement: V
+- sensor:
+    name: Minus Wh per km
+    command: "grep 'Wh/km=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Battery Temp
+    command: "grep 'Batt_Temp=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: temperature
+    unit_of_measurement: °C
+- sensor:
+    name: Minus Battery Temp low
+    command: "grep 'Batt_Temp_Low=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: temperature
+    unit_of_measurement: °C
+- sensor:
+    name: Minus Battery Temp high
+    command: "grep 'Batt_Temp_High=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+    device_class: temperature
+    unit_of_measurement: °C
+- sensor:
+    name: Minus Heater Temp Flow
+    command: "grep 'Heater_Temp_Flow=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Heater Temp Return
+    command: "grep 'Heater_Temp_Return=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Cockpit Lights
+    command: "grep 'CockpitLights=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
+- sensor:
+    name: Minus Cockpit HandBrake
+    command: "grep 'CockpitHandBrake=' /BT_CAN/CarState.txt | cut -d '=' -f 2"
