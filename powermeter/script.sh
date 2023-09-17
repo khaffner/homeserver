@@ -9,5 +9,5 @@ while true; do
     echo $LINE
 
     # Publish value to mqtt server
-    mosquitto_pub -h 192.168.1.2 -t powermeter -m $LINE -u $MQTTUSER -P $MQTTPASS
+    mosquitto_pub -h 192.168.1.8 -t powermeter -m $LINE -u $MQTTUSER -P $MQTTPASS
 done
